@@ -1,4 +1,4 @@
-put your UČOs (and names) on this line (no exact format required)
+Lukáš Hudec - 536495, Marek Ličko - 536662
 ## PV021 project -- Deep Learning from Scratch
 
 ### DEADLINE
@@ -6,7 +6,7 @@ Sunday 8. 12. 2024 23:59 (December 8th)
 
 ### TASK
   - Implement a neural network in a low-level programming language
-    (C/C++/Java/C#/Rust) without the use of advanced libraries or frameworks.
+    (~~C~~/C++/~~Java/C#/Rust~~) without the use of advanced libraries or frameworks.
   - Train it on the supplied Fashion-MNIST dataset using a backpropagation
     algorithm.
 

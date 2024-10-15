@@ -1,4 +1,5 @@
 #include <cstddef>
+#include <cstring>
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
@@ -182,6 +183,7 @@ void mat_mul_vec(const Matrix& A, const std::vector<DT>& b,
         throw BadShapeException("mat_mul_vec (result)", A.shape, {r.size()});
     }
 
+    memset(r.data(), 0, r.size() * sizeof(DT));
     for (size_t row = 0; row < A.shape[0]; row++) {
         DT dot_product = 0;
         for (size_t col = 0; col < A.shape[1]; col++) {
@@ -200,10 +202,11 @@ void mat_mul_mat(const Matrix& A, const Matrix& B, Matrix& R) {
                                 R.shape);
     }
 
-    for (size_t i = 0; i < A.shape[0]; i++) {
-        for (size_t j = 0; j < B.shape[1]; j++) {
-            R.data[i * R.shape[1] + j] = 0;
-            for (size_t k = 0; k < B.shape[0]; k++) {
+    memset(R.data.data(), 0, R.data.size() * sizeof(DT));
+
+    for (size_t k = 0; k < B.shape[0]; k++) {
+        for (size_t i = 0; i < A.shape[0]; i++) {
+            for (size_t j = 0; j < B.shape[1]; j++) {
                 R.data[i * R.shape[1] + j] +=
                     A.data[i * A.shape[1] + k] * B.data[k * B.shape[1] + j];
             }
@@ -254,6 +257,12 @@ void tests() {
 
     mat_mul_mat(A, Id, R);
     std::cout << R << '\n';
+
+    A = full({1000, 1000}, 2);
+    B = full({1000, 1000}, 3);
+    R = Matrix(A.shape);
+
+    mat_mul_mat(A, B, R);
 }
 
 int main() {

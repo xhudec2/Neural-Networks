@@ -12,6 +12,7 @@ echo "#################"
 
 ## dont forget to use comiler optimizations (e.g. -O3 or -Ofast)
 # g++ -Wall -std=c++17 -O3 src/main.cpp src/file2.cpp -o network
+make release
 
 
 echo "#################"
@@ -21,4 +22,4 @@ echo "#################"
 ## use nice to decrease priority in order to comply with aisa rules
 ## https://www.fi.muni.cz/tech/unix/computation.html.en
 ## especially if you are using multiple cores
-# nice -n 19 ./network
+nice -n 19 ./net

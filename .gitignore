@@ -1,1 +1,4 @@
 data/*
+.cache/
+build/
+net

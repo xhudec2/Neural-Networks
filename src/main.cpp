@@ -1,6 +1,9 @@
+#include <algorithm>
+#include <cassert>
 #include <cstddef>
 #include <cstring>
 #include <iostream>
+#include <random>
 #include <sstream>
 #include <stdexcept>
 #include <vector>
@@ -24,16 +27,17 @@ class BadShapeException : public std::exception {
     std::string message;
 
    public:
-    BadShapeException(std::string op, std::vector<size_t> shape1,
-                      std::vector<size_t> shape2) {
+    BadShapeException(std::string op, const std::vector<size_t>& shape1,
+                      const std::vector<size_t>& shape2) {
         std::ostringstream oss;
         oss << "Invalid shapes for operation: " << op << ", ";
         oss << "Shape 1: " << shape1 << ", Shape 2: " << shape2;
         message = oss.str();
     }
 
-    BadShapeException(std::string op, std::vector<size_t> shape1,
-                      std::vector<size_t> shape2, std::vector<size_t> shape3) {
+    BadShapeException(std::string op, const std::vector<size_t>& shape1,
+                      const std::vector<size_t>& shape2,
+                      const std::vector<size_t>& shape3) {
         std::ostringstream oss;
         oss << "Invalid shapes for operation: " << op << ", ";
         oss << "Shape 1: " << shape1 << ", Shape 2: " << shape2
@@ -61,11 +65,11 @@ struct Matrix {
     std::vector<size_t> shape;
     size_t size;
 
-    Matrix(std::vector<size_t> shape) : shape{shape} {
+    Matrix(const std::vector<size_t>& shape) : shape{shape} {
         size = product(shape);
         data = std::vector<DT>(size);
     }
-    Matrix(std::vector<size_t> shape, DT val) : shape{shape} {
+    Matrix(const std::vector<size_t>& shape, DT val) : shape{shape} {
         size = product(shape);
         data = std::vector<DT>(size, val);
     }
@@ -184,6 +188,7 @@ void mat_mul_vec(const Matrix& A, const std::vector<DT>& b,
     }
 
     memset(r.data(), 0, r.size() * sizeof(DT));
+
     for (size_t row = 0; row < A.shape[0]; row++) {
         DT dot_product = 0;
         for (size_t col = 0; col < A.shape[1]; col++) {
@@ -214,9 +219,11 @@ void mat_mul_mat(const Matrix& A, const Matrix& B, Matrix& R) {
     }
 }
 
-Matrix full(std::vector<size_t> shape, DT val) { return Matrix(shape, val); }
-Matrix zeros(std::vector<size_t> shape) { return full(shape, 0); }
-Matrix identity(std::vector<size_t> shape) {
+Matrix full(const std::vector<size_t>& shape, DT val) {
+    return Matrix(shape, val);
+}
+Matrix zeros(const std::vector<size_t>& shape) { return full(shape, 0); }
+Matrix identity(const std::vector<size_t>& shape) {
     Matrix result = zeros(shape);
     for (size_t i = 0; i < shape[0]; i++) {
         result.data[i * shape[1] + i] = 1;
@@ -224,6 +231,35 @@ Matrix identity(std::vector<size_t> shape) {
 
     return result;
 }
+Matrix iota(const std::vector<size_t>& shape) {
+    Matrix result(shape);
+    for (size_t i = 0; i < result.size; i++) {
+        result.data[i] = i;
+    }
+
+    return result;
+}
+
+std::random_device rd{};
+std::mt19937 gen{rd()};
+
+Matrix random_normal(const std::vector<size_t>& shape, DT mean, DT std) {
+    Matrix result(shape);
+
+    std::normal_distribution<DT> d{mean, std};
+
+    for (size_t i = 0; i < result.size; i++) {
+        result.data[i] = d(gen);
+    }
+
+    return result;
+}
+
+template <typename T>
+void print(T thing) {
+    std::cout << thing << '\n';
+}
+void print() { std::cout << '\n'; }
 
 void tests() {
     Matrix A = full({4, 3}, 2);
@@ -231,41 +267,61 @@ void tests() {
     Matrix R = Matrix(A.shape);
 
     mat_add_const(A, 1, R);
-    std::cout << R << '\n';
+    mat_sub_const(R, 1, R);
+    assert(A.data == R.data);
+
+    mat_mul_const(A, 4, R);
+    mat_div_const(R, 4, R);
+    assert(A.data == R.data);
 
     mat_add_mat(A, B, R);
-    std::cout << R << '\n';
+    assert(
+        std::all_of(R.data.begin(), R.data.end(), [](DT a) { return a == 7; }));
 
     std::vector<DT> v{1, 2, 3};
-
     mat_add_row_vec(A, v, R);
-    std::cout << R << '\n';
+    for (size_t row = 0; row < R.shape[0]; row++) {
+        for (size_t col = 0; col < R.shape[1]; col++) {
+            assert(R.data[row * R.shape[1] + col] == 3 + col);
+        }
+    }
 
     v = {1, 2, 3, 4};
-
     mat_add_col_vec(A, v, R);
-    std::cout << R << '\n';
+    for (size_t row = 0; row < R.shape[0]; row++) {
+        for (size_t col = 0; col < R.shape[1]; col++) {
+            assert(R.data[row * R.shape[1] + col] == 3 + row);
+        }
+    }
 
     v = {1, 2, 3};
     std::vector<DT> r(4);
 
     mat_mul_vec(A, v, r);
-    std::cout << r << "\n\n";
+    assert(r[0] == 12 && r[1] == 12 && r[2] == 12 && r[3] == 12);
 
+    Matrix C = iota({3, 3});
     Matrix Id = identity({3, 3});
-    R = Matrix({4, 3});
+    R = Matrix({3, 3});
 
-    mat_mul_mat(A, Id, R);
-    std::cout << R << '\n';
+    mat_mul_mat(C, Id, R);
+    assert(C.data == R.data);
 
-    A = full({1000, 1000}, 2);
-    B = full({1000, 1000}, 3);
-    R = Matrix(A.shape);
+    Matrix D = random_normal({5, 5}, 0, 1);
+    Id = identity({5, 5});
+    R = Matrix({5, 5});
+    mat_mul_mat(D, Id, R);
+    assert(D.data == R.data);
 
-    mat_mul_mat(A, B, R);
+    // A = full({1000, 1000}, 2);
+    // B = full({1000, 1000}, 3);
+    // R = Matrix(A.shape);
+
+    // mat_mul_mat(A, B, R);
 }
 
 int main() {
     tests();
+
     return 0;
 }

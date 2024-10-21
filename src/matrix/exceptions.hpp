@@ -4,7 +4,6 @@
 #include "printer.hpp"
 #include <exception>
 #include <sstream>
-#include <iostream>
 #include <vector>
 
 struct BadShapeException : std::exception {

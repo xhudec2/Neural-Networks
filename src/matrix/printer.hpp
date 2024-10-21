@@ -8,9 +8,9 @@ template <typename T>
 void print(T thing) {
     std::cout << thing << '\n';
 }
-void print() { std::cout << '\n'; }
+inline void print() { std::cout << '\n'; }
 
-std::ostream& operator<<(std::ostream& os, const std::vector<size_t>& vec) {
+inline std::ostream& operator<<(std::ostream& os, const std::vector<size_t>& vec) {
     os << '{';
     for (size_t i = 0; i < vec.size(); i++) {
         os << vec[i];

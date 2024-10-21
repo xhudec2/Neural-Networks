@@ -1,7 +1,6 @@
-#include <sstream>
 #include "matrix.hpp"
 #include "exceptions.hpp"
-#include "printer.hpp"
+#include <cstring>
 
 size_t product(const std::vector<size_t> &shape) {
     size_t result = 1;

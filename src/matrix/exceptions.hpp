@@ -5,13 +5,14 @@
 #include <exception>
 #include <sstream>
 #include <vector>
+#include <string_view>
 
 struct BadShapeException : std::exception {
    private:
     std::string message;
 
    public:
-    BadShapeException(std::string op, const std::vector<size_t>& shape1,
+    BadShapeException(std::string_view op, const std::vector<size_t>& shape1,
                       const std::vector<size_t>& shape2) {
         std::ostringstream oss;
         oss << "Invalid shapes for operation: " << op << ", ";
@@ -19,7 +20,7 @@ struct BadShapeException : std::exception {
         message = oss.str();
     }
 
-    BadShapeException(std::string op, const std::vector<size_t>& shape1,
+    BadShapeException(std::string_view op, const std::vector<size_t>& shape1,
                       const std::vector<size_t>& shape2,
                       const std::vector<size_t>& shape3) {
         std::ostringstream oss;

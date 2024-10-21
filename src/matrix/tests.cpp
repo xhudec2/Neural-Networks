@@ -1,46 +1,8 @@
-#include "tests.hpp"
 #include <algorithm>
-#include <random>
 #include <cassert>
 
-Matrix full(const std::vector<size_t>& shape, DT val) {
-    return Matrix(shape, val);
-}
-
-Matrix zeros(const std::vector<size_t>& shape) { return full(shape, 0); }
-
-Matrix identity(const std::vector<size_t>& shape) {
-    Matrix result = zeros(shape);
-    for (size_t i = 0; i < shape[0]; i++) {
-        result.data[i * shape[1] + i] = 1;
-    }
-
-    return result;
-}
-
-Matrix iota(const std::vector<size_t>& shape) {
-    Matrix result(shape);
-    for (size_t i = 0; i < result.size; i++) {
-        result.data[i] = i;
-    }
-
-    return result;
-}
-
-std::random_device rd{};
-std::mt19937 gen{rd()};
-
-Matrix random_normal(const std::vector<size_t>& shape, DT mean, DT std) {
-    Matrix result(shape);
-
-    std::normal_distribution<DT> d{mean, std};
-
-    for (size_t i = 0; i < result.size; i++) {
-        result.data[i] = d(gen);
-    }
-
-    return result;
-}
+#include "tests.hpp"
+#include "matrix.hpp"
 
 void add_sub_test() {
     Matrix A = full({4, 3}, 2);
@@ -126,11 +88,11 @@ void mat_mul_rand_mat_test() {
 }
 
 // void large_mat_mul_mat_test() {
-//     // A = full({1000, 1000}, 2);
-//     // B = full({1000, 1000}, 3);
-//     // R = Matrix(A.shape);
+    // A = full({1000, 1000}, 2);
+    // B = full({1000, 1000}, 3);
+    // R = Matrix(A.shape);
 
-//     // mat_mul_mat(A, B, R);
+    // mat_mul_mat(A, B, R);
 // }
 
 

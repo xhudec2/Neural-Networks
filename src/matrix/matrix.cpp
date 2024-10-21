@@ -1,6 +1,8 @@
 #include "matrix.hpp"
 #include "exceptions.hpp"
 #include <cstring>
+#include <random>
+#include <string_view>
 
 size_t product(const std::vector<size_t> &shape) {
     size_t result = 1;
@@ -10,7 +12,7 @@ size_t product(const std::vector<size_t> &shape) {
     return result;
 }
 
-void check_shape_eq(std::string str, const Matrix& A, const Matrix& R)
+void check_shape_eq(std::string_view str, const Matrix& A, const Matrix& R)
 {
     if (A.shape != R.shape) {
         throw BadShapeException(str, A.shape, R.shape);
@@ -131,4 +133,43 @@ void mat_mul_mat(const Matrix& A, const Matrix& B, Matrix& R) {
             }
         }
     }
+}
+
+Matrix full(const std::vector<size_t>& shape, DT val) {
+    return Matrix(shape, val);
+}
+
+Matrix zeros(const std::vector<size_t>& shape) { return full(shape, 0); }
+
+Matrix identity(const std::vector<size_t>& shape) {
+    Matrix result = zeros(shape);
+    for (size_t i = 0; i < shape[0]; i++) {
+        result.data[i * shape[1] + i] = 1;
+    }
+
+    return result;
+}
+
+Matrix iota(const std::vector<size_t>& shape) {
+    Matrix result(shape);
+    for (size_t i = 0; i < result.size; i++) {
+        result.data[i] = i;
+    }
+
+    return result;
+}
+
+std::random_device rd{};
+std::mt19937 gen{rd()};
+
+Matrix random_normal(const std::vector<size_t>& shape, DT mean, DT std) {
+    Matrix result(shape);
+
+    std::normal_distribution<DT> d{mean, std};
+
+    for (size_t i = 0; i < result.size; i++) {
+        result.data[i] = d(gen);
+    }
+
+    return result;
 }

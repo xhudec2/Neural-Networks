@@ -62,4 +62,10 @@ void mat_add_col_vec(const Matrix& A, const std::vector<DT>& b, Matrix& R);
 void mat_mul_vec(const Matrix& A, const std::vector<DT>& b, std::vector<DT>& r);
 void mat_mul_mat(const Matrix& A, const Matrix& B, Matrix& R);
 
+Matrix full(const std::vector<size_t>& shape, DT val);
+Matrix zeros(const std::vector<size_t>& shape);
+Matrix identity(const std::vector<size_t>& shape);
+Matrix iota(const std::vector<size_t>& shape);
+Matrix random_normal(const std::vector<size_t>& shape, DT mean, DT std);
+
 #endif

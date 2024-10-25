@@ -12,6 +12,7 @@ struct CSV {
     }
 
     void load(std::string filename);
+    void save(std::string filename) const;
 };
 
 #endif

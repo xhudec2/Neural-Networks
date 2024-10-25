@@ -5,7 +5,7 @@
 #include <utility>
 
 #include "../matrix/matrix.hpp"
-#include "../parser/csv_reader.hpp"
+#include "../parser/csv.hpp"
 
 const size_t IMG_SIZE = 28 * 28;
 const size_t DATASET_SIZE = 60000;

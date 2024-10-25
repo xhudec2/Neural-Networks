@@ -1,16 +1,14 @@
 #include "data/dataset.hpp"
 #include "matrix/printer.hpp"
-#include "matrix/tests.hpp"
-#include "parser/csv_reader.hpp"
+#include "tests/tests.hpp"
+#include "parser/csv.hpp"
+#include "constants.hpp"
 
 int main() {
-    tests();
+    matrix_tests();
+    csv_tests();
 
-    std::string path =
-        "/Users/xhudec2/Documents/School/5. "
-        "semester/PV021/Neural-Networks/data/fashion_mnist_train_vectors.csv";
-
-    Dataset ds(path, 512, 53760);
+    Dataset ds(TRAIN_VEC_PATH, 512, 53760);
     size_t batch_size = 1024;
     Matrix batch({batch_size, 28 * 28});
 

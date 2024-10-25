@@ -1,6 +1,7 @@
 #ifndef TESTS_HPP
 #define TESTS_HPP
 
-void tests();
+void matrix_tests();
+void csv_tests();
 
 #endif

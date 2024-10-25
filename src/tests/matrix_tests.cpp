@@ -2,7 +2,7 @@
 #include <cassert>
 
 #include "tests.hpp"
-#include "matrix.hpp"
+#include "../matrix/matrix.hpp"
 
 void add_sub_test() {
     Matrix A = full({4, 3}, 2);
@@ -96,7 +96,7 @@ void mat_mul_rand_mat_test() {
 // }
 
 
-void tests() {
+void matrix_tests() {
     add_sub_test();
     std::cout << "add_sub_test passed\n";
     mul_div_test();
@@ -114,3 +114,4 @@ void tests() {
     mat_mul_rand_mat_test();
     std::cout << "mat_mul_rand_mat_test passed\n";
 }
+

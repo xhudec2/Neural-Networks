@@ -1,4 +1,4 @@
-SRC = src/*.cpp src/matrix/*.cpp src/parser/*.cpp src/data/*.cpp
+SRC = src/*.cpp src/matrix/*.cpp src/parser/*.cpp src/data/*.cpp src/tests/*.cpp
 FLAGS = -std=c++20 -Wall -Wextra -Werror -pedantic -g
 COMPILER = g++
 ifeq ($(shell uname), Darwin)

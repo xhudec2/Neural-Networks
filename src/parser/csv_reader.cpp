@@ -5,6 +5,11 @@
 
 void CSV::load(std::string filename) {
     std::fstream file(filename);
+
+    if (!file.is_open()) {
+        throw std::runtime_error("Failed to open file");
+    }
+    
     std::string line;
     size_t index = 0;
     while (std::getline(file, line)) {

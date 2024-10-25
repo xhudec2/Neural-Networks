@@ -13,6 +13,8 @@ struct Matrix {
     std::vector<size_t> shape;
     size_t size;
 
+    Matrix() {}
+    
     Matrix(std::vector<size_t> shape) : shape{shape} {
         size = product(shape);
         data = std::vector<DT>(size);

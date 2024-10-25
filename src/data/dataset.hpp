@@ -23,7 +23,7 @@ struct Dataset {
         data = std::move(file.data);
     }
 
-    void get_next_batch(size_t, bool, Matrix &);
+    void get_next_batch(size_t form, bool val, Matrix& batch);
 };
 
 #endif

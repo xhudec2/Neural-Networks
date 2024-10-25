@@ -1,10 +1,12 @@
 #include "matrix.hpp"
-#include "exceptions.hpp"
+
 #include <cstring>
 #include <random>
 #include <string_view>
 
-size_t product(const std::vector<size_t> &shape) {
+#include "exceptions.hpp"
+
+size_t product(const std::vector<size_t>& shape) {
     size_t result = 1;
     for (size_t v : shape) {
         result *= v;
@@ -12,8 +14,7 @@ size_t product(const std::vector<size_t> &shape) {
     return result;
 }
 
-void check_shape_eq(std::string_view str, const Matrix& A, const Matrix& R)
-{
+void check_shape_eq(std::string_view str, const Matrix& A, const Matrix& R) {
     if (A.shape != R.shape) {
         throw BadShapeException(str, A.shape, R.shape);
     }
@@ -69,7 +70,7 @@ void mat_add_row_vec(const Matrix& A, const std::vector<DT>& b, Matrix& R) {
     if (A.shape[1] != b.size()) {
         throw BadShapeException("mat_add_row_vec", A.shape, {b.size()});
     }
-    
+
     check_shape_eq("mat_add_row_vec (result)", A, R);
 
     for (size_t row = 0; row < A.shape[0]; row++) {

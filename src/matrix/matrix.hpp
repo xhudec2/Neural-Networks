@@ -1,12 +1,12 @@
 #ifndef MATRIX_HPP
 #define MATRIX_HPP
 
-#include <vector>
 #include <iostream>
+#include <vector>
 
 using DT = float;
 
-size_t product(const std::vector<size_t> &shape);
+size_t product(const std::vector<size_t>& shape);
 
 struct Matrix {
     std::vector<DT> data;
@@ -14,7 +14,7 @@ struct Matrix {
     size_t size;
 
     Matrix() {}
-    
+
     Matrix(std::vector<size_t> shape) : shape{shape} {
         size = product(shape);
         data = std::vector<DT>(size);

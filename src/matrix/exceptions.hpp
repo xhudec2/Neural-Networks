@@ -1,11 +1,12 @@
 #ifndef EXCEPTION_HPP
 #define EXCEPTION_HPP
 
-#include "printer.hpp"
 #include <exception>
 #include <sstream>
-#include <vector>
 #include <string_view>
+#include <vector>
+
+#include "printer.hpp"
 
 struct BadShapeException : std::exception {
    private:

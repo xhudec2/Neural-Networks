@@ -2,11 +2,57 @@
 
 #include <cstring>
 #include <random>
+#include <cassert>
 #include <string_view>
 
 #include "exceptions.hpp"
 
-size_t product(const std::vector<size_t>& shape) {
+
+
+Matrix &Matrix::operator/(DT c) {
+    for (size_t i = 0; i < size(); ++i) {
+        data[i] = c / data[i];
+    }
+    return *this;
+}
+
+Matrix &Matrix::operator-(const Matrix &B) {
+    assert(shape == B.shape);
+    for (size_t i = 0;  i < size(); ++i) {
+        data[i] -= B.data[i];
+    }
+    return *this;
+}
+
+
+Matrix &Matrix::operator*=(const Matrix &B) {
+    // defined only if B is a vector of shape (1, X) or (X, 1)
+    assert((B.shape[0] == 1 && B.shape[1] == shape[1]) || (B.shape[1] == 1 && B.shape[0] == shape[0]));
+
+    for (size_t row = 0; row < shape[0]; row++) {
+        for (size_t col = 0; col < shape[1]; col++) {
+            size_t idx = (B.shape[0] == 1) ? col : row;
+            data[row * shape[1] + col] *= B.data[idx];
+        }
+    }
+    return *this;
+}
+
+Matrix &Matrix::operator*=(DT c) {
+    for (size_t i = 0; i < size(); ++i) {
+        data[i] *= c;
+    }
+    return *this;
+}
+
+Matrix &Matrix::operator+=(const Matrix &B) {
+    for (size_t i = 0; i < size(); ++i) {
+        data[i] += B.data[i];
+    }
+    return *this;
+}
+
+size_t product(const shape_t& shape) {
     size_t result = 1;
     for (size_t v : shape) {
         result *= v;
@@ -23,7 +69,7 @@ void check_shape_eq(std::string_view str, const Matrix& A, const Matrix& R) {
 void mat_add_const(const Matrix& A, DT c, Matrix& R) {
     check_shape_eq("mat_add_const (result)", A, R);
 
-    for (size_t i = 0; i < A.size; i++) {
+    for (size_t i = 0; i < A.size(); i++) {
         R.data[i] = A.data[i] + c;
     }
 }
@@ -31,7 +77,7 @@ void mat_add_const(const Matrix& A, DT c, Matrix& R) {
 void mat_sub_const(const Matrix& A, DT c, Matrix& R) {
     check_shape_eq("mat_sub_const (result)", A, R);
 
-    for (size_t i = 0; i < A.size; i++) {
+    for (size_t i = 0; i < A.size(); i++) {
         R.data[i] = A.data[i] - c;
     }
 }
@@ -39,7 +85,7 @@ void mat_sub_const(const Matrix& A, DT c, Matrix& R) {
 void mat_mul_const(const Matrix& A, DT c, Matrix& R) {
     check_shape_eq("mat_mul_const (result)", A, R);
 
-    for (size_t i = 0; i < A.size; i++) {
+    for (size_t i = 0; i < A.size(); i++) {
         R.data[i] = A.data[i] * c;
     }
 }
@@ -50,7 +96,7 @@ void mat_div_const(const Matrix& A, DT c, Matrix& R) {
     }
     check_shape_eq("mat_div_const (result)", A, R);
 
-    for (size_t i = 0; i < A.size; i++) {
+    for (size_t i = 0; i < A.size(); i++) {
         R.data[i] = A.data[i] / c;
     }
 }
@@ -61,7 +107,7 @@ void mat_add_mat(const Matrix& A, const Matrix& B, Matrix& R) {
     }
     check_shape_eq("mat_add_mat (result)", A, R);
 
-    for (size_t i = 0; i < A.size; i++) {
+    for (size_t i = 0; i < A.size(); i++) {
         R.data[i] = A.data[i] + B.data[i];
     }
 }
@@ -136,13 +182,13 @@ void mat_mul_mat(const Matrix& A, const Matrix& B, Matrix& R) {
     }
 }
 
-Matrix full(const std::vector<size_t>& shape, DT val) {
+Matrix full(const shape_t& shape, DT val) {
     return Matrix(shape, val);
 }
 
-Matrix zeros(const std::vector<size_t>& shape) { return full(shape, 0); }
+Matrix zeros(const shape_t& shape) { return full(shape, 0); }
 
-Matrix identity(const std::vector<size_t>& shape) {
+Matrix identity(const shape_t& shape) {
     Matrix result = zeros(shape);
     for (size_t i = 0; i < shape[0]; i++) {
         result.data[i * shape[1] + i] = 1;
@@ -151,9 +197,9 @@ Matrix identity(const std::vector<size_t>& shape) {
     return result;
 }
 
-Matrix iota(const std::vector<size_t>& shape) {
+Matrix iota(const shape_t& shape) {
     Matrix result(shape);
-    for (size_t i = 0; i < result.size; i++) {
+    for (size_t i = 0; i < result.size(); i++) {
         result.data[i] = i;
     }
 
@@ -163,12 +209,12 @@ Matrix iota(const std::vector<size_t>& shape) {
 std::random_device rd{};
 std::mt19937 gen{rd()};
 
-Matrix random_normal(const std::vector<size_t>& shape, DT mean, DT std) {
+Matrix random_normal(const shape_t& shape, DT mean, DT std) {
     Matrix result(shape);
 
     std::normal_distribution<DT> d{mean, std};
 
-    for (size_t i = 0; i < result.size; i++) {
+    for (size_t i = 0; i < result.size(); i++) {
         result.data[i] = d(gen);
     }
 

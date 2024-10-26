@@ -7,7 +7,7 @@
 struct CSV {
     Matrix data;
 
-    CSV(const std::vector<size_t> &shape, std::string filename) : data{shape} {
+    CSV(const shape_t &shape, std::string filename) : data{shape} {
         load(filename);
     }
 

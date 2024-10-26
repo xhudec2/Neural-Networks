@@ -18,7 +18,7 @@ struct Dataset {
 
     Dataset(std::string path, size_t batch_size, size_t train_size)
         : batch_size{batch_size}, val_start{train_size} {
-        std::vector<size_t> shape{DATASET_SIZE, IMG_SIZE};
+        shape_t shape{DATASET_SIZE, IMG_SIZE};
         CSV file(shape, path);
         data = std::move(file.data);
     }

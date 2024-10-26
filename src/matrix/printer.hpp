@@ -10,7 +10,7 @@ void print(T thing) {
 }
 inline void print() { std::cout << '\n'; }
 
-inline std::ostream& operator<<(std::ostream& os, const std::vector<size_t>& vec) {
+inline std::ostream& operator<<(std::ostream& os, const shape_t& vec) {
     os << '{';
     for (size_t i = 0; i < vec.size(); i++) {
         os << vec[i];

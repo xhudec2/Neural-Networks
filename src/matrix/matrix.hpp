@@ -3,25 +3,30 @@
 
 #include <iostream>
 #include <vector>
+#include <cassert>
 
 using DT = float;
-
-size_t product(const std::vector<size_t>& shape);
+using shape_t = std::vector<size_t>;
+size_t product(const shape_t& shape);
 
 struct Matrix {
     std::vector<DT> data;
-    std::vector<size_t> shape;
-    size_t size;
+    shape_t shape;
 
     Matrix() {}
 
-    Matrix(std::vector<size_t> shape) : shape{shape} {
-        size = product(shape);
-        data = std::vector<DT>(size);
+    Matrix(shape_t shape) : shape{shape} {
+        data = std::vector<DT>(product(shape));
     }
-    Matrix(std::vector<size_t> shape, DT val) : shape{shape} {
-        size = product(shape);
-        data = std::vector<DT>(size, val);
+    Matrix(shape_t shape, DT val) : shape{shape} {
+        data = std::vector<DT>(product(shape), val);
+    }
+
+    Matrix T() {
+        assert(shape[0] == 1 or shape[1] == 1);
+        Matrix mat = *this;
+        std::swap(mat.shape[0], mat.shape[1]);
+        return mat;
     }
 
     friend std::ostream& operator<<(std::ostream& os, const Matrix& M) {
@@ -45,13 +50,12 @@ struct Matrix {
         os << "]\n";
         return os;
     }
-    // friend Matrix operator+(Matrix A, Matrix B);
-    // friend Matrix operator+(Matrix A, DT c);
-    // friend Matrix operator*(Matrix A, DT c);
-    // friend Matrix operator*(Matrix A, Matrix B);
-    // friend Matrix operator-(Matrix A, DT c);
-    // friend Matrix operator-(Matrix A, Matrix B);
-    // friend Matrix operator/(Matrix A, DT c);
+    Matrix &operator+=(const Matrix &);
+    Matrix &operator/(DT );
+    Matrix &operator-(const Matrix &);
+    Matrix &operator*=(const Matrix &);
+    Matrix &operator*=(DT);
+    size_t size() const { return data.size(); }
 };
 
 void mat_add_const(const Matrix& A, DT c, Matrix& R);
@@ -64,10 +68,10 @@ void mat_add_col_vec(const Matrix& A, const std::vector<DT>& b, Matrix& R);
 void mat_mul_vec(const Matrix& A, const std::vector<DT>& b, std::vector<DT>& r);
 void mat_mul_mat(const Matrix& A, const Matrix& B, Matrix& R);
 
-Matrix full(const std::vector<size_t>& shape, DT val);
-Matrix zeros(const std::vector<size_t>& shape);
-Matrix identity(const std::vector<size_t>& shape);
-Matrix iota(const std::vector<size_t>& shape);
-Matrix random_normal(const std::vector<size_t>& shape, DT mean, DT std);
+Matrix full(const shape_t& shape, DT val);
+Matrix zeros(const shape_t& shape);
+Matrix identity(const shape_t& shape);
+Matrix iota(const shape_t& shape);
+Matrix random_normal(const shape_t& shape, DT mean, DT std);
 
 #endif

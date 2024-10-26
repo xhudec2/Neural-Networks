@@ -13,17 +13,17 @@ struct BadShapeException : std::exception {
     std::string message;
 
    public:
-    BadShapeException(std::string_view op, const std::vector<size_t>& shape1,
-                      const std::vector<size_t>& shape2) {
+    BadShapeException(std::string_view op, const shape_t& shape1,
+                      const shape_t& shape2) {
         std::ostringstream oss;
         oss << "Invalid shapes for operation: " << op << ", ";
         oss << "Shape 1: " << shape1 << ", Shape 2: " << shape2;
         message = oss.str();
     }
 
-    BadShapeException(std::string_view op, const std::vector<size_t>& shape1,
-                      const std::vector<size_t>& shape2,
-                      const std::vector<size_t>& shape3) {
+    BadShapeException(std::string_view op, const shape_t& shape1,
+                      const shape_t& shape2,
+                      const shape_t& shape3) {
         std::ostringstream oss;
         oss << "Invalid shapes for operation: " << op << ", ";
         oss << "Shape 1: " << shape1 << ", Shape 2: " << shape2

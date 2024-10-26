@@ -3,6 +3,7 @@
 
 #include "tests.hpp"
 #include "../matrix/matrix.hpp"
+#include "../matrix/printer.hpp"
 
 void add_sub_test() {
     Matrix A = full({4, 3}, 2);
@@ -87,13 +88,34 @@ void mat_mul_rand_mat_test() {
     assert(C.data == R.data);
 }
 
-// void large_mat_mul_mat_test() {
-    // A = full({1000, 1000}, 2);
-    // B = full({1000, 1000}, 3);
-    // R = Matrix(A.shape);
+void mat_row_vec_multiply_operator() {
+    shape_t shape = {5, 3};
+    Matrix A = iota(shape);
+    Matrix v = iota({1, 3});
+    for (auto &val : v.data) {
+        val += 1;
+    }
+    for (auto &val : A.data) {
+        val += 1;
+    }
+    A *= v;
+    assert((A.data == std::vector<DT>{{1, 2*2, 3*3, 4, 5*2, 6*3, 7, 8*2, 9*3, 10, 11*2, 12*3, 13, 14*2, 15*3}}));
+}
 
-    // mat_mul_mat(A, B, R);
-// }
+void mat_col_vec_multiply_operator() {
+    shape_t shape = {5, 3};
+    Matrix A = iota(shape);
+    Matrix v = iota({5, 1});
+    for (auto &val : v.data) {
+        val += 1;
+    }
+    for (auto &val : A.data) {
+        val += 1;
+    }
+    A *= v;
+    assert((A.data == std::vector<DT>{{1, 2, 3, 4*2, 5*2, 6*2, 7*3, 8*3, 9*3, 10*4, 11*4, 12*4, 13*5, 14*5, 15*5}}));
+}
+
 
 
 void matrix_tests() {
@@ -113,5 +135,9 @@ void matrix_tests() {
     std::cout << "mat_mul_mat_test passed\n";
     mat_mul_rand_mat_test();
     std::cout << "mat_mul_rand_mat_test passed\n";
+    mat_row_vec_multiply_operator();
+    std::cout << "mat_row_vec_multiply_operator passed\n";
+    mat_col_vec_multiply_operator();
+    std::cout << "mat_col_vec_multiply_operator passed\n";
 }
 

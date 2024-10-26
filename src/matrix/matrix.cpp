@@ -9,13 +9,6 @@
 
 
 
-Matrix &Matrix::operator/(DT c) {
-    for (size_t i = 0; i < size(); ++i) {
-        data[i] = c / data[i];
-    }
-    return *this;
-}
-
 Matrix &Matrix::operator-(const Matrix &B) {
     assert(shape == B.shape);
     for (size_t i = 0;  i < size(); ++i) {
@@ -23,7 +16,6 @@ Matrix &Matrix::operator-(const Matrix &B) {
     }
     return *this;
 }
-
 
 Matrix &Matrix::operator*=(const Matrix &B) {
     // defined only if B is a vector of shape (1, X) or (X, 1)

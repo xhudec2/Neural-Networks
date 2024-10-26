@@ -56,8 +56,8 @@ struct Linear {
 
     Linear(size_t in_dim, size_t out_dim, bool output, Activation &sigma)
         : shape{{in_dim, out_dim}}, 
-          weights{random_normal(shape, 0, 2.0 / (shape[1] + product(shape)))},
-          bias{random_normal({1, shape[1]}, 0, 2.0 / (shape[1] + product(shape)))},
+          weights{random_normal(shape, 0, (2.0 / 51))},
+          bias{random_normal({1, shape[1]}, 0, (2.0 / 51))},
             //   weights{shape, .1}, bias{{1, shape[1]}, .1},
           gradient{shape}, bias_gradient{{1, shape[1]}},
           output{output}, sigma{sigma} {};

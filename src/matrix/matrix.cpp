@@ -199,7 +199,7 @@ Matrix iota(const shape_t& shape) {
 }
 
 std::random_device rd{};
-std::mt19937 gen{rd()};
+std::mt19937 gen{0};
 
 Matrix random_normal(const shape_t& shape, DT mean, DT std) {
     Matrix result(shape);

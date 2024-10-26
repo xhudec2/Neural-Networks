@@ -19,7 +19,7 @@ int main() {
     //         ds.get_next_batch(x * batch_size, false, batch);
     //     }
     // }
-    Network net({2, 5, 3, 1});
+    Network net({2, 3, 5, 3, 1});
     net.train();
 
     return 0;

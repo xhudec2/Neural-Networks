@@ -4,8 +4,8 @@
 #include "../matrix/printer.hpp"
 
 void Linear::forward(const Matrix &input, Matrix &output) {
-    // std::cout << "input:\n";
-    // print(input);
+    std::cout << "input:\n";
+    print(input);
     // std::cout << "weights:\n";
     // print(weights);
 
@@ -14,8 +14,9 @@ void Linear::forward(const Matrix &input, Matrix &output) {
 
     memcpy(&inputs.data[0], &input.data[0], sizeof(float) * input.size());
     mat_mul_mat(input, weights, output); // (batch, in_dim) x (in_dim, out_dim) = (batch, out_dim)
-    // std::cout << "mul output:\n";
-    // print(output);
+    output += bias;
+    std::cout << "mul output:\n";
+    print(output);
     sigma.diff(output, dSigma);     // (batch, 1, out_dim)
     sigma.apply(output);
     // std::cout << "mul output activation:\n";
@@ -32,12 +33,17 @@ void Linear::prepare_layer(size_t batch_size) {
 }
 
 Matrix &Linear::backward(Matrix &dE_dy, bool last) {
-    // // std::cout << "grad:     " << gradient.shape << '\n';
-    // // std::cout << "inputs:   " << inputs.shape << '\n';
-    // // std::cout << "dSigma:   " << dSigma.shape << '\n';
-    // // std::cout << "dE_dy:    " << dE_dy.shape << '\n';
-    // // std::cout << "dE_dOut:  " << dE_dOut.shape << '\n';
-    // // std::cout << '\n';
+    // std::cout << "grad:     " << gradient.shape << '\n';
+    // std::cout << "bias_grad:" << bias_gradient.shape << '\n';
+    // std::cout << "inputs:   " << inputs.shape << '\n';
+    // std::cout << "dSigma:   " << dSigma.shape << '\n';
+    // std::cout << "dE_dy:    " << dE_dy.shape << '\n';
+    // std::cout << "dE_dOut:  " << dE_dOut.shape << '\n';
+    // std::cout << '\n';
+    bias_gradient *= 0;
+    bias_gradient += dSigma.T();
+    bias_gradient *= dE_dy.T();  
+
     gradient *= 0;
     gradient += inputs.T();
     gradient *= dSigma.T();

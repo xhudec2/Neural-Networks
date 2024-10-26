@@ -43,7 +43,9 @@ struct Sigmoid : Activation {
 struct Linear {
     shape_t shape;
     Matrix weights; // in_dim x out_dim
+    Matrix bias;
     Matrix gradient; // in_dim x out_dim
+    Matrix bias_gradient;
     bool output;
     Activation &sigma;
 
@@ -54,9 +56,10 @@ struct Linear {
 
     Linear(size_t in_dim, size_t out_dim, bool output, Activation &sigma)
         : shape{{in_dim, out_dim}}, 
-        //   weights{random_normal(shape, 0, (1.0 / product(shape)))},
-          weights{shape, .1},
-          gradient{shape},
+          weights{random_normal(shape, 0, 2.0 / (shape[1] + product(shape)))},
+          bias{random_normal({1, shape[1]}, 0, 2.0 / (shape[1] + product(shape)))},
+            //   weights{shape, .1}, bias{{1, shape[1]}, .1},
+          gradient{shape}, bias_gradient{{1, shape[1]}},
           output{output}, sigma{sigma} {};
 
     void prepare_layer(size_t);

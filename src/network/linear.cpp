@@ -1,5 +1,6 @@
 #include "network.hpp"
 #include <cassert>
+#include <cstring>
 #include "../matrix/printer.hpp"
 
 void Linear::forward(const Matrix &input, Matrix &output) {

@@ -12,7 +12,7 @@ void Linear::forward(const Matrix &input, Matrix &output) {
     assert(input.shape[1] == weights.shape[0]);
     assert(weights.shape[1] == output.shape[1] && input.shape[0] == output.shape[0]);
 
-    memcpy(inputs.data.data(), input.data.data(), input.size());
+    memcpy(&inputs.data[0], &input.data[0], sizeof(float) * input.size());
     mat_mul_mat(input, weights, output); // (batch, in_dim) x (in_dim, out_dim) = (batch, out_dim)
     // std::cout << "mul output:\n";
     // print(output);

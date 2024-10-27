@@ -8,7 +8,6 @@
 #include "exceptions.hpp"
 
 
-
 Matrix &Matrix::operator-(const Matrix &B) {
     assert(shape == B.shape);
     for (size_t i = 0;  i < size(); ++i) {

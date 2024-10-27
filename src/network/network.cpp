@@ -25,7 +25,7 @@ void Network::train() {
     }
     auto [inputs, targets] = XOR_dataset();
     Matrix outputs{targets[0].shape};
-    for (size_t epoch = 0; epoch < 10000; ++epoch) {
+    for (size_t epoch = 0; epoch < 1; ++epoch) {
         print("layers: ");
         for (auto &layer : layers) {
             print("weights: ");
@@ -34,11 +34,12 @@ void Network::train() {
             print(layer.bias);
         }
         print("");
-        for (size_t i = 0; i < targets.size(); ++i) {
+        for (size_t i = 2; i < targets.size(); ++i) {
             forward(inputs[i], outputs);
             backward(outputs, targets[i]);
             update();
             print("");
+            break;
         }
     }
 }
@@ -58,16 +59,16 @@ Matrix get_loss(const Matrix &output, const Matrix &target) {
 
     std::cout << "target: " << target.data[0] << '\n';
     std::cout << "output: " << output.data[0] << '\n';
-    // std::cout << "loss: {";
+    std::cout << "loss: {";
     DT denom = target.data[0] == 0 ? (1 - output.data[0]) : (output.data[0]);
     loss.data[0] = -1.0 / (denom + 0.1);
-    // if (target.data[0] == 1) {
-    //     std::cout << -log(static_cast<double>(output.data[0] + 0.00001));
-    // } else {
-    //     std::cout << -log(1.0 - static_cast<double>(output.data[0] + 0.00001));
-    // }
-    // std::cout << "}\n";
-    // std::cout << "loss_data: {" << loss.data[0] << "}\n";
+    if (target.data[0] == 1) {
+        std::cout << -log(static_cast<double>(output.data[0] + 0.00001));
+    } else {
+        std::cout << -log(1.0 - static_cast<double>(output.data[0] + 0.00001));
+    }
+    std::cout << "}\n";
+    std::cout << "loss_data: {" << loss.data[0] << "}\n";
 
     return loss;
 }
@@ -82,10 +83,10 @@ void Network::backward(const Matrix &output, const Matrix &target) {
 
 void Network::update() {
     for (auto &layer : layers) {
-        // print("gradient:");
-        // print(layer.gradient);
-        // print("bias gradient:");
-        // print(layer.bias_gradient);
+        print("gradient:");
+        print(layer.gradient);
+        print("bias gradient:");
+        print(layer.bias_gradient);
         float lr = -0.01;
         layer.gradient *= lr;
         layer.weights += layer.gradient;

@@ -4,8 +4,8 @@
 #include "../matrix/printer.hpp"
 
 void Linear::forward(const Matrix &input, Matrix &output) {
-    std::cout << "input:\n";
-    print(input);
+    // std::cout << "input:\n";
+    // print(input);
     // std::cout << "weights:\n";
     // print(weights);
 
@@ -15,14 +15,14 @@ void Linear::forward(const Matrix &input, Matrix &output) {
     memcpy(&inputs.data[0], &input.data[0], sizeof(DT) * input.size());
     mat_mul_mat(input, weights, output); // (batch, in_dim) x (in_dim, out_dim) = (batch, out_dim)
     output += bias;
-    std::cout << "mul output:\n";
-    print(output);
+    // std::cout << "mul output:\n";
+    // print(output);
     sigma.diff(output, dSigma);     // (batch, 1, out_dim)
     sigma.apply(output);
-    std::cout << "mul output activation:\n";
-    print(output);
-    std::cout << "dSigma:\n";
-    print(dSigma);
+    // std::cout << "mul output activation:\n";
+    // print(output);
+    // std::cout << "dSigma:\n";
+    // print(dSigma);
     // std::cout << "\n\n";
 }
 
@@ -41,16 +41,29 @@ Matrix &Linear::backward(Matrix &dE_dy, bool last) {
     // std::cout << "dE_dOut:  " << dE_dOut.shape << '\n';
     // std::cout << '\n';
     bias_gradient *= 0;
+    // print(dSigma.T());
+    // print(dE_dy.T());
+    // print(bias_gradient);
     bias_gradient += dSigma.T();
+    // print(bias_gradient);
     bias_gradient *= dE_dy.T();  
+    // print(bias_gradient);
+    bias_gradient *= 0.25;
+    bias_gradient_accum += bias_gradient;
 
     gradient *= 0;
-    gradient += inputs.T();
-    gradient *= dSigma.T();
-    gradient *= dE_dy.T();
     // print(gradient);
-    print("dE_dy:");
-    print(dE_dy);
+    // print(inputs.T());
+    gradient += inputs.T();
+    // print(gradient);
+    gradient *= dSigma.T();
+    // print(gradient);
+    gradient *= dE_dy.T();
+    gradient *= 0.25;
+    gradient_accum += gradient;
+    // print(gradient);
+    // print(gradient);
+    // print(dE_dy);
     if (!last) {
         dSigma *= dE_dy;
         // print("dSigma *= dE_dy:");

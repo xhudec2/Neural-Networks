@@ -25,28 +25,26 @@ void Network::train() {
     }
     auto [inputs, targets] = XOR_dataset();
     Matrix outputs{targets[0].shape};
-    for (size_t epoch = 0; epoch < 1; ++epoch) {
-        print("layers: ");
-        for (auto &layer : layers) {
-            print("weights: ");
-            print(layer.weights);
-            print("bias: ");
-            print(layer.bias);
-        }
-        print("");
-        for (size_t i = 2; i < targets.size(); ++i) {
+    for (size_t epoch = 0; epoch < 10; ++epoch) {
+        // print("layers: ");
+        // for (auto &layer : layers) {
+        //     print("weights: ");
+        //     print(layer.weights);
+        //     print("bias: ");
+        //     print(layer.bias);
+        // }
+        // print("");
+        for (size_t i = 0; i < targets.size(); ++i) {
             forward(inputs[i], outputs);
             backward(outputs, targets[i]);
-            update();
             print("");
-            break;
+            update();
         }
     }
 }
 
 void Network::forward(const Matrix &input, Matrix &outputs) {
     for (size_t i = 0; i < layers.size(); ++i) {
-        
         const Matrix &in = (i == 0) ? input : layers[i].inputs;
         Matrix &out = (i == layers.size() - 1) ? outputs : layers[i + 1].inputs;
         layers[i].forward(in, out);
@@ -59,15 +57,15 @@ Matrix get_loss(const Matrix &output, const Matrix &target) {
 
     std::cout << "target: " << target.data[0] << '\n';
     std::cout << "output: " << output.data[0] << '\n';
-    std::cout << "loss: {";
-    DT denom = target.data[0] == 0 ? (1 - output.data[0]) : (output.data[0]);
-    loss.data[0] = -1.0 / (denom + 0.1);
-    if (target.data[0] == 1) {
-        std::cout << -log(static_cast<double>(output.data[0] + 0.00001));
-    } else {
-        std::cout << -log(1.0 - static_cast<double>(output.data[0] + 0.00001));
-    }
-    std::cout << "}\n";
+    // std::cout << "loss: {";
+    DT denom = target.data[0] == 0 ? (output.data[0] - 1) : (output.data[0]);
+    loss.data[0] = -1.0 / (denom + 0.01);
+    // if (target.data[0] == 1) {
+    //     std::cout << -log(static_cast<double>(output.data[0] + 0.00001));
+    // } else {
+    //     std::cout << -log(1.0 - static_cast<double>(output.data[0] + 0.00001));
+    // }
+    // std::cout << "}\n";
     std::cout << "loss_data: {" << loss.data[0] << "}\n";
 
     return loss;
@@ -82,15 +80,30 @@ void Network::backward(const Matrix &output, const Matrix &target) {
 }
 
 void Network::update() {
+    // int i = 0;
     for (auto &layer : layers) {
-        print("gradient:");
-        print(layer.gradient);
-        print("bias gradient:");
-        print(layer.bias_gradient);
-        float lr = -0.01;
-        layer.gradient *= lr;
-        layer.weights += layer.gradient;
-        layer.bias_gradient *= lr;
-        layer.bias += layer.bias_gradient;
+        // std::cout << "layer: " << i++ << '\n';
+        float lr = -1;
+        // print("gradient:");
+        // print(layer.gradient);
+        // print("weights:");
+        // print(layer.weights);
+        // print(layer.gradient_accum);
+        layer.gradient_accum *= lr;
+        layer.weights += layer.gradient_accum;
+        layer.gradient_accum *= 0;
+        // print("weights:");
+        // print(layer.weights);
+
+        // print("bias gradient:");
+        // print(layer.bias_gradient);
+        // print("bias:");
+        // print(layer.bias);
+        // print(layer.bias_gradient_accum);
+        layer.bias_gradient_accum *= lr;
+        layer.bias += layer.bias_gradient_accum;
+        layer.bias_gradient_accum *= 0;
+        // print("bias:");
+        // print(layer.bias);
     }
 }

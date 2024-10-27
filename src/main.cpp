@@ -20,14 +20,14 @@ int main() {
     //     }
     // }
     Network net({2, 3, 5, 3, 1});
-    for (auto& layer : net.layers) {
-        for (auto &weight : layer.weights.data) {
-            weight = std::round(weight * 1000) / 1000;
-        }
-        for (auto &weight : layer.bias.data) {
-            weight = std::round(weight * 1000) / 1000;
-        }
-    }
+    // for (auto& layer : net.layers) {
+    //     for (auto &weight : layer.weights.data) {
+    //         weight = std::round(weight * 1000) / 1000;
+    //     }
+    //     for (auto &weight : layer.bias.data) {
+    //         weight = std::round(weight * 1000) / 1000;
+    //     }
+    // }
     net.train();
 
     return 0;

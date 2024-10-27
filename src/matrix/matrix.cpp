@@ -37,8 +37,21 @@ Matrix &Matrix::operator*=(DT c) {
 }
 
 Matrix &Matrix::operator+=(const Matrix &B) {
-    for (size_t i = 0; i < size(); ++i) {
-        data[i] += B.data[i];
+    if (shape == B.shape) {
+        for (size_t i = 0; i < size(); ++i) {
+            data[i] += B.data[i];
+        }
+    }
+    else if (B.shape[0] == 1 || B.shape[1] == 1) {
+        for (size_t row = 0; row < shape[0]; row++) {
+            for (size_t col = 0; col < shape[1]; col++) {
+                size_t idx = (B.shape[0] == 1) ? col : row;
+                data[row * shape[1] + col] += B.data[idx];
+            }
+        }
+    }
+    else {
+        assert(false);
     }
     return *this;
 }

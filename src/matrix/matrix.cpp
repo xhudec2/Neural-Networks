@@ -5,6 +5,7 @@
 #include <cassert>
 #include <string_view>
 
+#include "../constants.hpp"
 #include "exceptions.hpp"
 
 
@@ -211,7 +212,7 @@ Matrix iota(const shape_t& shape) {
 }
 
 std::random_device rd{};
-std::mt19937 gen{0};
+std::mt19937 gen{RAND_SEED};
 
 Matrix random_normal(const shape_t& shape, DT mean, DT std) {
     Matrix result(shape);

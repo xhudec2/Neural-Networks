@@ -4,6 +4,8 @@
 #include "parser/csv.hpp"
 #include "constants.hpp"
 #include "network/network.hpp"
+#include "hparams.hpp"
+
 
 int main() {
     // matrix_tests();
@@ -19,8 +21,14 @@ int main() {
     //         ds.get_next_batch(x * batch_size, false, batch);
     //     }
     // }
-    Network net({2, 3, 5, 3, 1});
-    net.train();
+    Hparams hparams = {
+        .shape = {2, 8, 64, 32, 16, 1},
+        .learning_rate = 0.01,
+        .num_epochs = 500,
+        .batch_size = 1,
+    };
+    Network net(hparams.shape);
+    net.train(hparams);
 
     return 0;
 }

@@ -9,7 +9,8 @@ release: FLAGS += -O3 -funroll-loops -march=native
 # -flto -fprefetch-loop-arrays -fno-rtti -ffast-math
 
 all:
-	$(COMPILER) $(FLAGS) $(SRC) -o net
+	@$(COMPILER) $(FLAGS) $(SRC) -o net
+	@echo "compilation done"
 
 release: all
 

@@ -1,4 +1,4 @@
-#include "network.hpp"
+#include "linear.hpp"
 #include <cassert>
 #include <cstring>
 #include "../matrix/printer.hpp"
@@ -20,7 +20,7 @@ void Linear::prepare_layer(size_t batch_size) {
     dE_dOut = Matrix({shape[0], 1});
 }
 
-Matrix &Linear::backward(Matrix &dE_dy, bool last) {
+void Linear::backward(Matrix &dE_dy, bool last) {
     bias_gradient *= 0;
     bias_gradient += dSigma.T();
     bias_gradient *= dE_dy.T();  
@@ -35,5 +35,5 @@ Matrix &Linear::backward(Matrix &dE_dy, bool last) {
         dSigma *= dE_dy;
         mat_mul_mat(weights, dSigma, dE_dOut);
     }
-    return dE_dOut;
+    dE_dy = dE_dOut;
 }

@@ -25,7 +25,7 @@ void Network::train() {
     }
     auto [inputs, targets] = XOR_dataset();
     Matrix outputs{targets[0].shape};
-    for (size_t epoch = 0; epoch < 10; ++epoch) {
+    for (size_t epoch = 0; epoch < 10000; ++epoch) {
         // print("layers: ");
         // for (auto &layer : layers) {
         //     print("weights: ");
@@ -33,13 +33,13 @@ void Network::train() {
         //     print("bias: ");
         //     print(layer.bias);
         // }
-        // print("");
+        print("--------------------");
         for (size_t i = 0; i < targets.size(); ++i) {
             forward(inputs[i], outputs);
             backward(outputs, targets[i]);
             print("");
-            update();
         }
+        update();
     }
 }
 
@@ -83,7 +83,7 @@ void Network::update() {
     // int i = 0;
     for (auto &layer : layers) {
         // std::cout << "layer: " << i++ << '\n';
-        float lr = -1;
+        float lr = -0.01;
         // print("gradient:");
         // print(layer.gradient);
         // print("weights:");

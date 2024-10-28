@@ -48,7 +48,6 @@ Matrix &Linear::backward(Matrix &dE_dy, bool last) {
     // print(bias_gradient);
     bias_gradient *= dE_dy.T();  
     // print(bias_gradient);
-    bias_gradient *= 0.25;
     bias_gradient_accum += bias_gradient;
 
     gradient *= 0;
@@ -59,7 +58,6 @@ Matrix &Linear::backward(Matrix &dE_dy, bool last) {
     gradient *= dSigma.T();
     // print(gradient);
     gradient *= dE_dy.T();
-    gradient *= 0.25;
     gradient_accum += gradient;
     // print(gradient);
     // print(gradient);

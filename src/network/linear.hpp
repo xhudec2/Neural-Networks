@@ -21,7 +21,7 @@ struct Linear {
 
     Linear(size_t in_dim, size_t out_dim, bool output, Activation &sigma)
         : shape{{in_dim, out_dim}}, 
-          weights{random_normal(shape, 0, 2.0 / shape[0])}, // He init
+          weights{random_normal(shape, 0, std::sqrt(2.0 / shape[0]))}, // He init
           bias{zeros({1, shape[1]})},
           gradient{shape}, bias_gradient{{1, shape[1]}},
           gradient_accum{shape}, bias_gradient_accum{{1, shape[1]}},

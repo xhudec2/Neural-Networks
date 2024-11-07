@@ -64,8 +64,7 @@ Matrix cross_entropy(const Matrix &outputs, const Matrix &targets) {
     Matrix dE_dy(probs.shape);
 
     // dE_dy = (predicted probs) - (one hot encoded targets)
-    // (copy probs and subtract 1 from the index of the correct class in each
-    // batch)
+    // (copy probs and subtract 1 from the index of the correct class in each batch)
     dE_dy.data = probs.data;
     for (size_t batch = 0; batch < probs.shape[0]; batch++) {
         size_t correct_i = targets[{batch, 0}];

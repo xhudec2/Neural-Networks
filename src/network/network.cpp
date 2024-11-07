@@ -3,9 +3,11 @@
 #include "../matrix/printer.hpp"
 
 auto XOR_dataset() {
-    Matrix inputs({4, 2}, {0, 0, 0, 1, 1, 0, 1, 1});
-    Matrix targets(
-        {4, 1}, {0, 1, 1, 0});  // Each value is the index of the correct class
+    Matrix inputs({4, 2}, {0, 0,
+                           0, 1,
+                           1, 0,
+                           1, 1});
+    Matrix targets({4, 1}, {0, 1, 1, 0});  // Each value is the index of the correct class
 
     return std::pair{inputs, targets};
 }
@@ -17,10 +19,10 @@ void Network::train(Hparams hparams) {
     auto [inputs, targets] = XOR_dataset();
     Matrix outputs{{hparams.batch_size, layers.back().shape[1]}};
     for (size_t epoch = 0; epoch < hparams.num_epochs; ++epoch) {
-        print("--------------------");
+        // print("--------------------");
         forward(inputs, outputs);
         backward(outputs, targets);
-        update(hparams.learning_rate);
+        update();
     }
 }
 
@@ -83,14 +85,9 @@ void Network::backward(const Matrix &outputs, const Matrix &targets) {
     }
 }
 
-void Network::update(float lr) {
+void Network::update() {
     for (auto &layer : layers) {
-        layer.grad *= -lr;
-        layer.weights += layer.grad;
-        layer.grad = 0;
-
-        layer.bias_grad *= -lr;
-        layer.bias += layer.bias_grad;
-        layer.bias_grad = 0;
+        optimizer.step(layer.weights, layer.grad);
+        optimizer.step(layer.bias, layer.bias_grad);
     }
 }

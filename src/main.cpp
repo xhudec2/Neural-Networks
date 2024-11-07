@@ -4,6 +4,7 @@
 #include "parser/csv.hpp"
 #include "constants.hpp"
 #include "network/network.hpp"
+#include "network/optimizer.hpp"
 #include "hparams.hpp"
 
 
@@ -21,13 +22,17 @@ int main() {
     //         ds.get_next_batch(x * batch_size, false, batch);
     //     }
     // }
+
     Hparams hparams = {
-        .shape = {2, 3, 2},
+        .shape = {2, 16, 16, 2},
         .learning_rate = 0.1,
-        .num_epochs = 1000,
+        .num_epochs = 20,
         .batch_size = 4,
     };
-    Network net(hparams.shape);
+    
+    SGD optimizer(hparams.learning_rate);
+
+    Network net(hparams.shape, optimizer);
     net.train(hparams);
 
     return 0;

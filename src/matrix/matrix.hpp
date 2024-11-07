@@ -54,12 +54,13 @@ struct Matrix {
     }
 
     Matrix &operator=(DT);
+    Matrix &operator+=(DT);
+    Matrix &operator*=(DT);
+    Matrix &operator/=(DT);
     Matrix &operator+=(const Matrix &);
     Matrix &operator/(DT);
-    Matrix &operator/=(DT);
     Matrix &operator-(const Matrix &);
     Matrix &operator*=(const Matrix &);
-    Matrix &operator*=(DT);
     size_t size() const { return data.size(); }
     
     const DT& operator[](shape_t indices) const;

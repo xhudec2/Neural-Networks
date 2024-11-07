@@ -37,6 +37,13 @@ Matrix &Matrix::operator*=(const Matrix &B) {
     return *this;
 }
 
+Matrix &Matrix::operator+=(DT c) {
+    for (size_t i = 0; i < size(); ++i) {
+        data[i] += c;
+    }
+    return *this;
+}
+
 Matrix &Matrix::operator*=(DT c) {
     for (size_t i = 0; i < size(); ++i) {
         data[i] *= c;

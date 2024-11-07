@@ -1,20 +1,14 @@
 #include "network.hpp"
+
 #include "../matrix/printer.hpp"
 
 auto XOR_dataset() {
-    shape_t shape = {1, 2};
-    Matrix a(shape); a.data = {1, 1};
-    Matrix b(shape); b.data = {1, 0};
-    Matrix c(shape); c.data = {0, 1};
-    Matrix d(shape); d.data = {0, 0};
-    std::vector<Matrix> inputs = {a, b, c, d};
+    Matrix inputs({4, 2}, {0, 0,
+                           0, 1,
+                           1, 0, 
+                           1, 1});
 
-    shape_t target_shape = {1, 1};
-    Matrix target_a(target_shape); target_a.data = {1};
-    Matrix target_b(target_shape); target_b.data = {0};
-    Matrix target_c(target_shape); target_c.data = {0};
-    Matrix target_d(target_shape); target_d.data = {1};
-    std::vector<Matrix> targets = {target_a, target_b, target_c, target_d};
+    Matrix targets({4, 1}, {0, 1, 1, 0}); // Each value is the index of the correct class
 
     return std::pair{inputs, targets};
 }
@@ -24,47 +18,68 @@ void Network::train(Hparams hparams) {
         layer.prepare_layer(hparams.batch_size);
     }
     auto [inputs, targets] = XOR_dataset();
-    Matrix outputs{targets[0].shape};
+    Matrix outputs{{hparams.batch_size, layers.back().shape[1]}};
     for (size_t epoch = 0; epoch < hparams.num_epochs; ++epoch) {
         print("--------------------");
-        for (size_t i = 0; i < targets.size(); ++i) {
-            forward(inputs[i], outputs);
-            backward(outputs, targets[i]);
-            update(hparams.learning_rate);
-        }
+        // for (size_t i = 0; i < targets.size(); ++i) {
+        forward(inputs, outputs);
+        backward(outputs, targets);
+        update(hparams.learning_rate);
+        // }
     }
 }
 
 void Network::forward(const Matrix &input, Matrix &outputs) {
     for (size_t i = 0; i < layers.size(); ++i) {
+        bool last = i == layers.size() - 1;
         const Matrix &in = (i == 0) ? input : layers[i].inputs;
-        Matrix &out = (i == layers.size() - 1) ? outputs : layers[i + 1].inputs;
-        layers[i].forward(in, out);
+        Matrix &out = last ? outputs : layers[i + 1].inputs;
+        layers[i].forward(in, out, last);
     }
 }
 
-Matrix get_loss(const Matrix &output, const Matrix &target) {
-    Matrix loss(target.shape);
+Matrix get_loss(const Matrix &outputs, const Matrix &targets) {
+    Matrix probs(outputs.shape);
 
-    std::cout << "target: " << target.data[0] << "; ";
-    std::cout << "output: " << output.data[0] << "; ";
-    std::cout << "loss: ";
-    DT denom = target.data[0] == 0 ? (output.data[0] - 1) : (output.data[0]);
-    loss.data[0] = -1.0 / (denom + 0.01);
-    if (target.data[0] == 1) {
-        std::cout << -log(static_cast<double>(output.data[0] + 0.00001));
-    } else {
-        std::cout << -log(1.0 - static_cast<double>(output.data[0] + 0.00001));
+    for (size_t batch = 0; batch < outputs.shape[0]; batch++) {
+        DT exp_sum = 0;
+        for (size_t j = 0; j < outputs.shape[1]; j++) {
+            probs[{batch, j}] = expf(outputs[{batch, j}]);
+            exp_sum += probs[{batch, j}];
+        }
+        
+        for (size_t j = 0; j < outputs.shape[1]; j++) {
+            probs[{batch, j}] /= exp_sum;
+        }
     }
-    std::cout << "\n";
-
-    return loss;
-}
     
+    DT loss = 0;
+    for (size_t batch = 0; batch < targets.shape[0]; batch++) {
+        loss += -logf(probs[{batch, static_cast<size_t>(targets[{batch, 0}])}]);
+    }
+    loss /= targets.shape[0]; // We want mean NLL
+    std::cout << "loss: " << loss << '\n';
+
+    Matrix dE_dy(probs.shape);
+
+    dE_dy.data = probs.data;
+    for (size_t batch = 0; batch < probs.shape[0]; batch++) {
+        size_t correct_i = targets[{batch, 0}];
+        dE_dy[{batch, correct_i}] = probs[{batch, correct_i}] - 1;
+    }
+
+    dE_dy /= static_cast<DT>(probs.shape[0]); // Averaging over batch size
+    
+    return dE_dy;
+}
+
 void Network::backward(const Matrix &output, const Matrix &target) {
     Matrix dE_dy = get_loss(output, target);
     for (int i = layers.size() - 1; i >= 0; --i) {
         bool last = i == 0;
+        if (static_cast<size_t>(i) == layers.size() - 1) {
+            layers[i].dSigma = 1;
+        }
         layers[i].backward(dE_dy, last);
     }
 }

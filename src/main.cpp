@@ -22,10 +22,10 @@ int main() {
     //     }
     // }
     Hparams hparams = {
-        .shape = {2, 8, 64, 32, 16, 1},
+        .shape = {2, 3, 2},
         .learning_rate = 0.1,
-        .num_epochs = 100,
-        .batch_size = 1,
+        .num_epochs = 1000,
+        .batch_size = 4,
     };
     Network net(hparams.shape);
     net.train(hparams);

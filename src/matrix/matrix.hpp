@@ -10,8 +10,8 @@ using shape_t = std::vector<size_t>;
 size_t product(const shape_t& shape);
 
 struct Matrix {
-    std::vector<DT> data;
     shape_t shape;
+    std::vector<DT> data;
 
     Matrix() {}
 
@@ -21,6 +21,8 @@ struct Matrix {
     Matrix(shape_t shape, DT val) : shape{shape} {
         data = std::vector<DT>(product(shape), val);
     }
+    Matrix(shape_t shape, std::initializer_list<DT> vals) : shape{shape}, 
+                                                            data{vals} {}
 
     Matrix T() {
         assert(shape[0] == 1 or shape[1] == 1);
@@ -50,12 +52,18 @@ struct Matrix {
         os << "]\n";
         return os;
     }
+
+    Matrix &operator=(DT);
     Matrix &operator+=(const Matrix &);
-    Matrix &operator/(DT );
+    Matrix &operator/(DT);
+    Matrix &operator/=(DT);
     Matrix &operator-(const Matrix &);
     Matrix &operator*=(const Matrix &);
     Matrix &operator*=(DT);
     size_t size() const { return data.size(); }
+    
+    const DT& operator[](shape_t indices) const;
+    DT& operator[](shape_t i);
 };
 
 void mat_add_const(const Matrix& A, DT c, Matrix& R);

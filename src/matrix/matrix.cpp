@@ -8,6 +8,13 @@
 #include "../constants.hpp"
 #include "exceptions.hpp"
 
+Matrix &Matrix::operator=(DT c) {
+    for (size_t i = 0; i < size(); ++i) {
+        data[i] = c;
+    }
+    
+    return *this;
+}
 
 Matrix &Matrix::operator-(const Matrix &B) {
     assert(shape == B.shape);
@@ -37,6 +44,10 @@ Matrix &Matrix::operator*=(DT c) {
     return *this;
 }
 
+Matrix &Matrix::operator/=(DT c) {
+     return (*this) *= (1 / c);   
+}
+
 Matrix &Matrix::operator+=(const Matrix &B) {
     if (shape == B.shape) {
         for (size_t i = 0; i < size(); ++i) {
@@ -55,6 +66,14 @@ Matrix &Matrix::operator+=(const Matrix &B) {
         assert(false);
     }
     return *this;
+}
+
+const DT& Matrix::operator[](shape_t indices) const {
+    return data[indices[0] * shape[1] + indices[1]];
+}
+
+DT& Matrix::operator[](shape_t indices) {
+    return data[indices[0] * shape[1] + indices[1]];
 }
 
 size_t product(const shape_t& shape) {

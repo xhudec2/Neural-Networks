@@ -28,7 +28,7 @@ struct Linear {
           output{output}, sigma{sigma} {};
 
     void prepare_layer(size_t);
-    void forward(const Matrix &, Matrix &);
+    void forward(const Matrix &, Matrix &, bool);
     void backward(Matrix &, bool);
 };
 

@@ -5,8 +5,8 @@
 #include <vector>
 
 template <typename T>
-void print(T thing) {
-    std::cout << thing << '\n';
+void print(T thing, std::string end = "\n") {
+    std::cout << thing << end;
 }
 inline void print() { std::cout << '\n'; }
 

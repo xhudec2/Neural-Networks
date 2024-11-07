@@ -34,4 +34,14 @@ struct Sigmoid : Activation {
     }
 };
 
+struct Identity : Activation {
+    virtual void apply(Matrix &output) override {
+        (void) output;
+    }
+    virtual void diff(const Matrix &output, Matrix &dSigma) override {
+        (void) output;
+        dSigma = 1;
+    }
+};
+
 #endif

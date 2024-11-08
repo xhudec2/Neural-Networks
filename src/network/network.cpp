@@ -37,19 +37,21 @@ void Network::forward(const Matrix &input, Matrix &outputs) {
 }
 
 DT cross_entropy(const Matrix &outputs, const Matrix &targets, Matrix& dE_dy) {
+    std::cout << "probs alloc\n";
     Matrix probs(outputs.shape);
 
     softmax(outputs, probs);
     DT loss = cross_entropy_from_probs(probs, targets);
 
+    std::cout << "dE_dy alloc\n";
     dE_dy = Matrix(probs.shape);
 
     // dE_dy = (predicted probs) - (one hot encoded targets)
     // (copy probs and subtract 1 from the index of the correct class in each batch)
     dE_dy.data = probs.data;
     for (size_t batch = 0; batch < probs.shape[0]; batch++) {
-        size_t correct_i = targets[{batch, 0}];
-        dE_dy[{batch, correct_i}] = probs[{batch, correct_i}] - 1;
+        size_t correct_i = targets.at(batch, 0);
+        dE_dy.at(batch, correct_i) = probs.at(batch, correct_i) - 1;
     }
 
     dE_dy /= static_cast<DT>(probs.shape[0]);  // Averaging over batch size

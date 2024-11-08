@@ -63,8 +63,8 @@ struct Matrix {
     Matrix &operator*=(const Matrix &);
     size_t size() const { return data.size(); }
     
-    const DT& operator[](shape_t indices) const;
-    DT& operator[](shape_t i);
+    const DT& at(size_t, size_t) const;
+    DT& at(size_t, size_t);
 };
 
 void mat_add_const(const Matrix& A, DT c, Matrix& R);

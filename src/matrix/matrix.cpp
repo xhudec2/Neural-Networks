@@ -12,7 +12,6 @@ Matrix &Matrix::operator=(DT c) {
     for (size_t i = 0; i < size(); ++i) {
         data[i] = c;
     }
-    
     return *this;
 }
 
@@ -75,12 +74,12 @@ Matrix &Matrix::operator+=(const Matrix &B) {
     return *this;
 }
 
-const DT& Matrix::operator[](shape_t indices) const {
-    return data[indices[0] * shape[1] + indices[1]];
+const DT& Matrix::at(size_t i, size_t j) const {
+    return data[i * shape[1] + j];
 }
 
-DT& Matrix::operator[](shape_t indices) {
-    return data[indices[0] * shape[1] + indices[1]];
+DT& Matrix::at(size_t i, size_t j) {
+    return data[i * shape[1] + j];
 }
 
 size_t product(const shape_t& shape) {
@@ -224,7 +223,7 @@ Matrix zeros(const shape_t& shape) { return full(shape, 0); }
 Matrix identity(const shape_t& shape) {
     Matrix result = zeros(shape);
     for (size_t i = 0; i < shape[0]; i++) {
-        result[{i, i}] = 1;
+        result.at(i, i) = 1;
     }
 
     return result;

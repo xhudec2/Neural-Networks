@@ -6,24 +6,26 @@
 
 #include "../matrix/matrix.hpp"
 #include "../parser/csv.hpp"
-
-const size_t IMG_SIZE = 28 * 28;
-const size_t DATASET_SIZE = 60000;
+#include "../constants.hpp"
 
 struct Dataset {
-    Matrix data;
+    Matrix Xdata;
+    Matrix ydata;
     size_t batch_size;
     size_t val_start;
     bool shuffle = false;
 
-    Dataset(std::string path, size_t batch_size, size_t train_size)
+    Dataset(std::string Xpath, std::string ypath, size_t batch_size, size_t train_size)
         : batch_size{batch_size}, val_start{train_size} {
-        shape_t shape{DATASET_SIZE, IMG_SIZE};
-        CSV file(shape, path);
-        data = std::move(file.data);
+        shape_t Xshape{DATASET_SIZE, IMG_SIZE};
+        shape_t yshape{DATASET_SIZE, 1};
+        CSV Xfile(Xshape, Xpath);
+        CSV yfile(yshape, ypath);
+        Xdata = std::move(Xfile.data);
+        ydata = std::move(yfile.data);
     }
 
-    void get_next_batch(size_t form, bool val, Matrix& batch);
+    void get_next_batch(size_t from, bool val, Matrix& Xbatch, Matrix& ybatch);
 };
 
 #endif

@@ -18,12 +18,12 @@ void test_read_write_csv(const std::vector<size_t>& shape,
 }
 
 void csv_tests() {
-    test_read_write_csv({60000, 784}, TRAIN_VEC_PATH);
+    test_read_write_csv({DATASET_SIZE, IMG_SIZE}, TRAIN_VEC_PATH);
     std::cout << "Reading and writing train vectors passed\n";
-    test_read_write_csv({60000, 1}, TRAIN_LABEL_PATH);
+    test_read_write_csv({DATASET_SIZE, 1}, TRAIN_LABEL_PATH);
     std::cout << "Reading and writing train labels passed\n";
-    test_read_write_csv({10000, 784}, TEST_VEC_PATH);
+    test_read_write_csv({TEST_SIZE, IMG_SIZE}, TEST_VEC_PATH);
     std::cout << "Reading and writing test vectors passed\n";
-    test_read_write_csv({10000, 1}, TEST_LABEL_PATH);
+    test_read_write_csv({TEST_SIZE, 1}, TEST_LABEL_PATH);
     std::cout << "Reading and writing test labels passed\n";
 }

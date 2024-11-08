@@ -214,7 +214,9 @@ void mat_mul_mat(const Matrix& A, const Matrix& B, Matrix& R) {
 }
 
 Matrix full(const shape_t& shape, DT val) {
-    return Matrix(shape, val);
+    Matrix result(shape);
+    result = val;
+    return result;
 }
 
 Matrix zeros(const shape_t& shape) { return full(shape, 0); }
@@ -222,7 +224,7 @@ Matrix zeros(const shape_t& shape) { return full(shape, 0); }
 Matrix identity(const shape_t& shape) {
     Matrix result = zeros(shape);
     for (size_t i = 0; i < shape[0]; i++) {
-        result.data[i * shape[1] + i] = 1;
+        result[{i, i}] = 1;
     }
 
     return result;

@@ -4,12 +4,6 @@
 #include <iostream>
 #include <vector>
 
-template <typename T>
-void print(T thing, std::string end = "\n") {
-    std::cout << thing << end;
-}
-inline void print() { std::cout << '\n'; }
-
 inline std::ostream& operator<<(std::ostream& os, const shape_t& vec) {
     os << '{';
     for (size_t i = 0; i < vec.size(); i++) {
@@ -21,5 +15,11 @@ inline std::ostream& operator<<(std::ostream& os, const shape_t& vec) {
     os << '}';
     return os;
 }
+
+template <typename T>
+void print(T thing, std::string end = "\n") {
+    std::cout << thing << end;
+}
+inline void print() { std::cout << '\n'; }
 
 #endif

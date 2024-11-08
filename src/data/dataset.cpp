@@ -1,6 +1,6 @@
 #include "dataset.hpp"
-
 #include <cstring>
+
 
 void Dataset::get_next_batch(size_t from, bool val, Matrix &Xbatch, Matrix &ybatch) {
     if (val) from += val_start;

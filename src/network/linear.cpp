@@ -5,16 +5,20 @@
 
 #include "../matrix/printer.hpp"
 
-void Linear::forward(const Matrix &input, Matrix &output) {
+void Linear::forward(const Matrix &input, Matrix &output, bool no_grad) {
     assert(input.shape[1] == weights.shape[0]);
     assert(weights.shape[1] == output.shape[1] &&
            input.shape[0] == output.shape[0]);
 
-    memcpy(&inputs.data[0], &input.data[0], sizeof(DT) * input.size());
+    if (!no_grad) {
+        memcpy(&inputs.data[0], &input.data[0], sizeof(DT) * input.size());
+    }
     mat_mul_mat(input, weights, output);
     output += bias;
 
-    sigma.diff(output, dSigma);
+    if (!no_grad) {
+        sigma.diff(output, dSigma);
+    }
     sigma.apply(output);
 }
 
@@ -41,7 +45,7 @@ void Linear::backward(Matrix &dE_dy, bool last) {
     }
 
     if (!last) {
-        dE_dOut *= 0;
+        dE_dOut = 0;
         for (size_t batch = 0; batch < dE_dy.shape[0]; batch++) {
             for (size_t i = 0; i < grad.shape[0]; i++) {
                 for (size_t j = 0; j < grad.shape[1]; j++) {
@@ -51,6 +55,4 @@ void Linear::backward(Matrix &dE_dy, bool last) {
             }
         }
     }
-
-    dE_dy = dE_dOut;
 }

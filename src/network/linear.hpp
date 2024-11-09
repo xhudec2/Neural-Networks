@@ -8,8 +8,10 @@ struct Linear {
     shape_t shape;
     Matrix weights;   // in_dim x out_dim
     Matrix grad;      // in_dim x out_dim
+    Matrix momentum;
     Matrix bias;      //      1 x out_dim
     Matrix bias_grad; //      1 x out_dim
+    Matrix bias_momentum;
     bool output;
     Activation &sigma;
 
@@ -21,12 +23,14 @@ struct Linear {
         : shape{{in_dim, out_dim}}, 
           weights{random_normal(shape, 0, std::sqrt(2.0 / shape[0]))}, // He init
           grad{shape},
+          momentum{shape},
           bias{zeros({1, shape[1]})},
           bias_grad{{1, shape[1]}},
+          bias_momentum{{1, shape[1]}},
           output{output}, sigma{sigma} {};
 
     void prepare_layer(size_t);
-    void forward(const Matrix &, Matrix &);
+    void forward(const Matrix &, Matrix &, bool no_grad=false);
     void backward(Matrix &, bool);
 };
 

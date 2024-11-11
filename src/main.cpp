@@ -25,11 +25,12 @@
 int main() {
     // matrix_tests();
     // csv_tests();
-
+    std::cout << "seed: " << RAND_SEED << "\n";
+    bool test_run = true;
     Hparams hparams = {
-        .shape = {IMG_SIZE, 128, 64, 32, 10},
-        .learning_rate = 0.05,
-        .num_epochs = 20,
+        .shape = {IMG_SIZE, 2048, 10},
+        .learning_rate = 0.001,
+        .num_epochs = 5,
         .batch_size = 100,
     };
 
@@ -57,7 +58,7 @@ int main() {
         pixel /= std;
     }
 
-    SGD optimizer(hparams.learning_rate);
+    Adam optimizer(hparams.learning_rate);
     Network net(hparams.shape, optimizer);
 
     Matrix Xbatch({hparams.batch_size, IMG_SIZE});
@@ -68,15 +69,12 @@ int main() {
     }
     // auto [inputs, targets] = XOR_dataset();
     Matrix outputs{{hparams.batch_size, net.layers.back().shape[1]}};
+    DT prev_loss = 0;
     for (size_t epoch = 1; epoch <= hparams.num_epochs; ++epoch) {
         print("--------------------");
         print("Epoch ", "");
         print(epoch);
-        if (epoch <= 10 && epoch >  5) optimizer.learning_rate *= 0.90;
-        if (epoch <= 15 && epoch > 10) optimizer.learning_rate *= 0.80;
-        if (epoch <= 20 && epoch > 15) optimizer.learning_rate *= 0.80;
-        if (epoch <= 25 && epoch > 20) optimizer.learning_rate *= 0.80;
-        
+
         for (size_t batch = 0; batch < TRAIN_SIZE / hparams.batch_size; ++batch) {
             ds.get_next_batch(batch * hparams.batch_size, false, Xbatch, ybatch);
 
@@ -116,41 +114,47 @@ int main() {
         print(loss);
         print("Val acc.: ", "");
         print((double) correct_preds / total_preds);
+        if (epoch > 1 && prev_loss < loss) {
+            optimizer.learning_rate *= 0.5;
+            print(optimizer.learning_rate);
+        }
+        prev_loss = loss;
     }
 
-    size_t correct_preds = 0;
-    size_t total_preds = 0; 
-    DT loss = 0;
+    if (test_run) {
+        size_t correct_preds = 0;
+        size_t total_preds = 0; 
+        DT loss = 0;
 
-    Dataset test_ds(TEST_VEC_PATH, TEST_LABEL_PATH, hparams.batch_size, TEST_SIZE);
-    test_ds.Xdata /= 255.;
-    for (auto &pixel : test_ds.Xdata.data) {
-        pixel -= mean;
-        pixel /= std;
-    }
-    Matrix probs(outputs.shape);
-    Matrix preds(ybatch.shape);
-    for (size_t batch = 0; batch < TEST_SIZE / hparams.batch_size; ++batch) {
-        test_ds.get_next_batch(batch * hparams.batch_size, false, Xbatch, ybatch);
-        net.forward(Xbatch, outputs, true);
-        softmax(outputs, probs);
-        predictions(probs, preds);
-        loss += cross_entropy_from_probs(probs, ybatch);
+        Dataset test_ds(TEST_VEC_PATH, TEST_LABEL_PATH, hparams.batch_size, TEST_SIZE);
+        test_ds.Xdata /= 255.;
+        for (auto &pixel : test_ds.Xdata.data) {
+            pixel -= mean;
+            pixel /= std;
+        }
+        Matrix probs(outputs.shape);
+        Matrix preds(ybatch.shape);
+        for (size_t batch = 0; batch < TEST_SIZE / hparams.batch_size; ++batch) {
+            test_ds.get_next_batch(batch * hparams.batch_size, false, Xbatch, ybatch);
+            net.forward(Xbatch, outputs, true);
+            softmax(outputs, probs);
+            predictions(probs, preds);
+            loss += cross_entropy_from_probs(probs, ybatch);
 
-        total_preds += hparams.batch_size;
-        for (size_t b = 0; b < hparams.batch_size; b++) {
-            if (preds.at(b, 0) == ybatch.at(b, 0)) {
-                correct_preds++;
+            total_preds += hparams.batch_size;
+            for (size_t b = 0; b < hparams.batch_size; b++) {
+                if (preds.at(b, 0) == ybatch.at(b, 0)) {
+                    correct_preds++;
+                }
             }
         }
+        
+        loss /= ((double)TEST_SIZE / hparams.batch_size);
+        
+        print("Test loss: ", "");
+        print(loss);
+        print("Test acc.: ", "");
+        print((double) correct_preds / total_preds);
     }
-    
-    loss /= ((double)TEST_SIZE / hparams.batch_size);
-    
-    print("Test loss: ", "");
-    print(loss);
-    print("Test acc.: ", "");
-    print((double) correct_preds / total_preds);
-
     return 0;
 }

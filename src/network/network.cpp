@@ -64,9 +64,7 @@ void Network::backward(const Matrix &outputs, const Matrix &targets) {
 
 void Network::update() {
     for (auto &layer : layers) {
-        optimizer.step(layer.weights, layer.grad, layer.momentum);
-        optimizer.step(layer.bias, layer.bias_grad, layer.bias_momentum);
-        // optimizer.step(layer.weights, layer.grad);
-        // optimizer.step(layer.bias, layer.bias_grad);
+        optimizer.step(layer.weights, layer.grad, layer.momentum, layer.rmsprop);
+        optimizer.step(layer.bias, layer.bias_grad, layer.bias_momentum, layer.bias_rmsprop);
     }
 }

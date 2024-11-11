@@ -28,6 +28,29 @@ void Linear::prepare_layer(size_t batch_size) {
     dE_dOut = Matrix({batch_size, shape[0]});
 }
 
+// void Linear::backward(Matrix &dE_dy, bool last) {
+//     dE_dOut = 0;
+//     for (size_t batch = 0; batch < dE_dy.shape[0]; batch++) {
+//         for (size_t j = 0; j < dE_dy.shape[1]; j++) {
+//             bias_grad.at(0, j) += dE_dy.at(batch, j) * dSigma.at(batch, j);
+//         }
+//     }
+
+//     for (size_t batch = 0; batch < dE_dy.shape[0]; batch++) {
+//         for (size_t i = 0; i < grad.shape[0]; i++) {
+//             for (size_t j = 0; j < grad.shape[1]; j++) {
+//                 grad.at(i, j) +=
+//                     dE_dy.at(batch, j) * dSigma.at(batch, j) * inputs.at(batch, i);
+                
+//                 if (!last) {
+//                     dE_dOut.at(batch, i) += dE_dy.at(batch, j) *
+//                                            dSigma.at(batch, j) * weights.at(i, j);
+//                 }
+//             }
+//         }
+//     }
+// }
+
 void Linear::backward(Matrix &dE_dy, bool last) {
     for (size_t batch = 0; batch < dE_dy.shape[0]; batch++) {
         for (size_t j = 0; j < dE_dy.shape[1]; j++) {

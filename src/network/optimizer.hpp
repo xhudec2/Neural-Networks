@@ -19,8 +19,8 @@ struct Adam : Optimizer {
     Adam(DT learning_rate) : learning_rate{learning_rate} {};
 
     void step(Matrix& weights, Matrix& grad, Matrix &momentum, Matrix &rmsprop) override {
-        DT normalizing_beta1 = 1.0 - std::powf(beta1, time);
-        DT normalizing_beta2 = 1.0 - std::powf(beta2, time);
+        DT normalizing_beta1 = 1.0 - powf(beta1, time);
+        DT normalizing_beta2 = 1.0 - powf(beta2, time);
         for (size_t i = 0; i < weights.size(); ++i) {
             momentum.data[i] = beta1 * momentum.data[i] + (1.0 - beta1) * grad.data[i];
             rmsprop.data[i] = beta2 * rmsprop.data[i] + (1.0 - beta2) * grad.data[i] * grad.data[i];

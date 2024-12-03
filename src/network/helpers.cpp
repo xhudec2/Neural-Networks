@@ -11,21 +11,21 @@
 // https://stackoverflow.com/questions/42599498/numerically-stable-softmax#:~:text=But%20it%20is%20easy%20to,in%20some%20but%20not%20all
 void softmax(const Matrix& logits, Matrix& probs) {
     for (size_t batch = 0; batch < logits.shape[0]; batch++) {
+        DT max = logits.at(batch, 0);
+        for (size_t j = 1; j < logits.shape[1]; j++) {
+            if (logits.at(batch, j) > max) {
+                max = logits.at(batch, j);
+            }
+        }
+        
         DT exp_sum = 0;
         for (size_t j = 0; j < logits.shape[1]; j++) {
-            probs.at(batch, j) = expf(logits.at(batch, j));
+            probs.at(batch, j) = expf(logits.at(batch, j) - max);
             exp_sum += probs.at(batch, j);
         }
 
         for (size_t j = 0; j < probs.shape[1]; j++) {
             probs.at(batch, j) /= exp_sum;
-            if (std::isnan(probs.at(batch, j)) || std::isinf(probs.at(batch, j))) {
-                for (size_t i = 0; i < probs.shape[1]; i++) {
-                    probs.at(batch, i) = 0.0;
-                }
-                probs.at(batch, j) = 1.0;
-                break;
-            }
         }
     }
 }

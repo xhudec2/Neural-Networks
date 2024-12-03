@@ -21,14 +21,13 @@
 //     free(memory);
 // }
 
-
 int main() {
     // matrix_tests();
     // csv_tests();
     std::cout << "seed: " << RAND_SEED << "\n";
     bool test_run = true;
     Hparams hparams = {
-        .shape = {IMG_SIZE, 2048, 10},
+        .shape = {IMG_SIZE, 256, 256, 10},
         .learning_rate = 0.001,
         .num_epochs = 5,
         .batch_size = 100,
@@ -36,7 +35,6 @@ int main() {
 
     Dataset ds(TRAIN_VEC_PATH, TRAIN_LABEL_PATH, hparams.batch_size, TRAIN_SIZE);
 
-    // TODO: Replace with actual normalization
     ds.Xdata /= 255.;
     double mean = 0.0;
     for (size_t i = 0; i < TRAIN_SIZE * IMG_SIZE; ++i) {
@@ -60,15 +58,12 @@ int main() {
 
     Adam optimizer(hparams.learning_rate);
     Network net(hparams.shape, optimizer);
+    net.prepare(hparams.batch_size);
 
     Matrix Xbatch({hparams.batch_size, IMG_SIZE});
     Matrix ybatch({hparams.batch_size, 1});
-
-    for (auto &layer : net.layers) {
-        layer.prepare_layer(hparams.batch_size);
-    }
-    // auto [inputs, targets] = XOR_dataset();
     Matrix outputs{{hparams.batch_size, net.layers.back().shape[1]}};
+    
     DT prev_loss = 0;
     for (size_t epoch = 1; epoch <= hparams.num_epochs; ++epoch) {
         print("--------------------");
@@ -90,7 +85,6 @@ int main() {
         size_t total_preds = 0; 
         DT loss = 0;
         
-        // TODO: VAL_SIZE size not divisible by batch_size
         Matrix probs(outputs.shape);
         Matrix preds(ybatch.shape);
         for (size_t batch = 0; batch < VAL_SIZE / hparams.batch_size; ++batch) {

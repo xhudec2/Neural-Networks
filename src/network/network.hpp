@@ -17,8 +17,8 @@ struct Network {
     Identity identity;
     DT loss;               // Only used for easy access to print in main loop
     bool no_grad = false;  // When set to 'true', do not calculate gradients
-    Matrix probs = shape_t({100, 10});
-    Matrix dE_dy = probs.shape;
+    Matrix probs;
+    Matrix dE_dy;
 
     Network(shape_t shape, Optimizer& optimizer) : optimizer{optimizer} {
         for (size_t i = 0; i < shape.size() - 1; ++i) {
@@ -33,6 +33,7 @@ struct Network {
     void backward(const Matrix& outputs, const Matrix& targets);
     void update();
     void train(Hparams);
+    void prepare(size_t batch_size);
     DT cross_entropy(const Matrix &, const Matrix &);
 };
 

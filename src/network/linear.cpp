@@ -22,7 +22,7 @@ void Linear::forward(const Matrix &input, Matrix &output, bool no_grad) {
     sigma.apply(output);
 }
 
-void Linear::prepare_layer(size_t batch_size) {
+void Linear::prepare(size_t batch_size) {
     inputs = Matrix({batch_size, shape[0]});
     dSigma = Matrix({batch_size, shape[1]});
     dE_dOut = Matrix({batch_size, shape[0]});

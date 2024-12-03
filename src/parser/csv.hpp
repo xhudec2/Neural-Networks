@@ -2,17 +2,14 @@
 #define CSV_READER_HPP
 
 #include <string>
+
 #include "../matrix/matrix.hpp"
 
 struct CSV {
     Matrix data;
 
-    CSV(const shape_t &shape, std::string filename) : data{shape} {
-        load(filename);
-    }
-
-    void load(std::string filename);
-    void save(std::string filename) const;
+    static void load(Matrix& m, std::string filename);
+    static void save(const Matrix& m, std::string filename);
 };
 
 #endif

@@ -7,14 +7,16 @@ void test_read_write_csv(const std::vector<size_t>& shape,
                          const std::string& file_path) {
     const std::string CSV_TEST_PATH = "./csv_test_file.csv";
 
-    CSV csv(shape, file_path);
-    csv.save(CSV_TEST_PATH);
+    Matrix m(shape);
+    CSV::load(m, file_path);
+    CSV::save(m, CSV_TEST_PATH);
 
     std::string diff_command = "diff " + file_path + ' ' + CSV_TEST_PATH;
     assert(system(diff_command.c_str()) == 0);
 
     std::string rm_command = "rm " + CSV_TEST_PATH;
-    assert(system(rm_command.c_str()) == 0); // Assert here just to stop a warning
+    assert(system(rm_command.c_str()) ==
+           0);  // Assert here just to stop a warning
 }
 
 void csv_tests() {

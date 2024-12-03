@@ -27,9 +27,9 @@ int main() {
     std::cout << "seed: " << RAND_SEED << "\n";
     bool test_run = true;
     Hparams hparams = {
-        .shape = {IMG_SIZE, 256, 256, 10},
+        .shape = {IMG_SIZE, 256, 128, 10},
         .learning_rate = 0.001,
-        .num_epochs = 5,
+        .num_epochs = 15,
         .batch_size = 100,
     };
 
@@ -116,37 +116,41 @@ int main() {
     }
 
     if (test_run) {
+        net.prepare(TEST_SIZE);
         size_t correct_preds = 0;
         size_t total_preds = 0; 
         DT loss = 0;
 
-        Dataset test_ds(TEST_VEC_PATH, TEST_LABEL_PATH, hparams.batch_size, TEST_SIZE);
-        test_ds.Xdata /= 255.;
-        for (auto &pixel : test_ds.Xdata.data) {
+        Matrix Xtest({TEST_SIZE, 784});
+        Matrix ytest({TEST_SIZE, 1});
+        CSV::load(Xtest, TEST_VEC_PATH);
+        CSV::load(ytest, TEST_LABEL_PATH);
+        // Dataset test_ds(TEST_VEC_PATH, TEST_LABEL_PATH, TEST_SIZE, TEST_SIZE);
+        Xtest /= 255.;
+        for (auto &pixel : Xtest.data) {
             pixel -= mean;
             pixel /= std;
         }
-        Matrix probs(outputs.shape);
-        Matrix preds(ybatch.shape);
-        for (size_t batch = 0; batch < TEST_SIZE / hparams.batch_size; ++batch) {
-            test_ds.get_next_batch(batch * hparams.batch_size, false, Xbatch, ybatch);
-            net.forward(Xbatch, outputs, true);
-            softmax(outputs, probs);
-            predictions(probs, preds);
-            loss += cross_entropy_from_probs(probs, ybatch);
+        Matrix test_out({TEST_SIZE, 10});
+        Matrix probs({TEST_SIZE, 10});
+        Matrix preds({TEST_SIZE, 1});
+        net.forward(Xtest, test_out, true);
+        softmax(test_out, probs);
+        predictions(probs, preds);
+        loss += cross_entropy_from_probs(probs, ytest);
 
-            total_preds += hparams.batch_size;
-            for (size_t b = 0; b < hparams.batch_size; b++) {
-                if (preds.at(b, 0) == ybatch.at(b, 0)) {
-                    correct_preds++;
-                }
+        for (size_t b = 0; b < TEST_SIZE; b++) {
+            if (preds.at(b, 0) == ytest.at(b, 0)) {
+                correct_preds++;
             }
         }
         
-        loss /= ((double)TEST_SIZE / hparams.batch_size);
+        loss /= TEST_SIZE;
         
         print("Test loss: ", "");
         print(loss);
+
+        CSV::save(preds, "test_preds.csv");
         print("Test acc.: ", "");
         print((double) correct_preds / total_preds);
     }

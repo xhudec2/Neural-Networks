@@ -19,10 +19,10 @@ struct Dataset {
         : batch_size{batch_size}, val_start{train_size} {
         shape_t Xshape{DATASET_SIZE, IMG_SIZE};
         shape_t yshape{DATASET_SIZE, 1};
-        CSV Xfile(Xshape, Xpath);
-        CSV yfile(yshape, ypath);
-        Xdata = std::move(Xfile.data);
-        ydata = std::move(yfile.data);
+        Xdata = Matrix(Xshape);
+        ydata = Matrix(yshape);
+        CSV::load(Xdata, Xpath);
+        CSV::load(ydata, ypath);
     }
 
     void get_next_batch(size_t from, bool val, Matrix& Xbatch, Matrix& ybatch);

@@ -11,7 +11,7 @@
 #include "tests/tests.hpp"
 
 Hparams hparams = {
-    .shape = {IMG_SIZE, 256, 256, 10},
+    .shape = {IMG_SIZE, 256, 128, 10},
     .learning_rate = 0.001,
     .num_epochs = 5,
     .batch_size = 100,
@@ -128,8 +128,6 @@ int main() {
     softmax(test_out, probs);
     predictions(probs, preds);
     loss += cross_entropy_from_probs(probs, ytest);
-
-    loss /= TEST_SIZE;
 
     print("Test loss: ", "");
     print(loss);

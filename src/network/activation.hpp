@@ -1,8 +1,9 @@
 #ifndef ACTIVATION_HPP
 #define ACTIVATION_HPP
 
-#include "../matrix/matrix.hpp"
 #include <cmath>
+
+#include "../matrix/matrix.hpp"
 
 struct Activation {
     virtual void apply(Matrix &) = 0;
@@ -35,11 +36,9 @@ struct Sigmoid : Activation {
 };
 
 struct Identity : Activation {
-    virtual void apply(Matrix &output) override {
-        (void) output;
-    }
+    virtual void apply(Matrix &output) override { (void)output; }
     virtual void diff(const Matrix &output, Matrix &dSigma) override {
-        (void) output;
+        (void)output;
         dSigma = 1;
     }
 };

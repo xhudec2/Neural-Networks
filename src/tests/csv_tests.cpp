@@ -15,8 +15,7 @@ void test_read_write_csv(const std::vector<size_t>& shape,
     assert(system(diff_command.c_str()) == 0);
 
     std::string rm_command = "rm " + CSV_TEST_PATH;
-    assert(system(rm_command.c_str()) ==
-           0);  // Assert here just to stop a warning
+    assert(system(rm_command.c_str()) == 0);  // Just to stop a warning
 }
 
 void csv_tests() {

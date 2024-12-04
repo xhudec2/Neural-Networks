@@ -1,13 +1,14 @@
 #include "helpers.hpp"
 
-#include "../matrix/printer.hpp"
 #include <math.h>
+
+#include "../matrix/printer.hpp"
 
 // logits - batch_size x fan_out
 // probs  - batch_size x fan_out
 
-// we came across an issue with softmax overflowing when probs contains large numbers
-// this is the fix we found
+// we came across an issue with softmax overflowing when probs contains large
+// numbers this is the fix we found
 // https://stackoverflow.com/questions/42599498/numerically-stable-softmax#:~:text=But%20it%20is%20easy%20to,in%20some%20but%20not%20all
 void softmax(const Matrix& logits, Matrix& probs) {
     for (size_t batch = 0; batch < logits.shape[0]; batch++) {
@@ -17,7 +18,7 @@ void softmax(const Matrix& logits, Matrix& probs) {
                 max = logits.at(batch, j);
             }
         }
-        
+
         DT exp_sum = 0;
         for (size_t j = 0; j < logits.shape[1]; j++) {
             probs.at(batch, j) = expf(logits.at(batch, j) - max);

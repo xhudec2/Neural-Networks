@@ -1,9 +1,9 @@
 #include <algorithm>
 #include <cassert>
 
-#include "tests.hpp"
 #include "../matrix/matrix.hpp"
 #include "../matrix/printer.hpp"
+#include "tests.hpp"
 
 void add_sub_test() {
     Matrix A = full({4, 3}, 2);
@@ -31,7 +31,8 @@ void add_matrices_test() {
     Matrix R = Matrix(A.shape);
 
     mat_add_mat(A, B, R);
-    assert(std::all_of(R.data.begin(), R.data.end(), [](DT a) { return a == 7; }));
+    assert(
+        std::all_of(R.data.begin(), R.data.end(), [](DT a) { return a == 7; }));
 }
 
 void add_row_vec_test() {
@@ -99,7 +100,9 @@ void mat_row_vec_multiply_operator() {
         val += 1;
     }
     A *= v;
-    assert((A.data == std::vector<DT>{{1, 2*2, 3*3, 4, 5*2, 6*3, 7, 8*2, 9*3, 10, 11*2, 12*3, 13, 14*2, 15*3}}));
+    assert((A.data ==
+            std::vector<DT>{{1, 2 * 2, 3 * 3, 4, 5 * 2, 6 * 3, 7, 8 * 2, 9 * 3,
+                             10, 11 * 2, 12 * 3, 13, 14 * 2, 15 * 3}}));
 }
 
 void mat_col_vec_multiply_operator() {
@@ -113,10 +116,10 @@ void mat_col_vec_multiply_operator() {
         val += 1;
     }
     A *= v;
-    assert((A.data == std::vector<DT>{{1, 2, 3, 4*2, 5*2, 6*2, 7*3, 8*3, 9*3, 10*4, 11*4, 12*4, 13*5, 14*5, 15*5}}));
+    assert((A.data ==
+            std::vector<DT>{{1, 2, 3, 4 * 2, 5 * 2, 6 * 2, 7 * 3, 8 * 3, 9 * 3,
+                             10 * 4, 11 * 4, 12 * 4, 13 * 5, 14 * 5, 15 * 5}}));
 }
-
-
 
 void matrix_tests() {
     add_sub_test();
@@ -140,4 +143,3 @@ void matrix_tests() {
     mat_col_vec_multiply_operator();
     std::cout << "mat_col_vec_multiply_operator passed\n";
 }
-

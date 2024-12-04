@@ -22,8 +22,7 @@ struct BadShapeException : std::exception {
     }
 
     BadShapeException(std::string_view op, const shape_t& shape1,
-                      const shape_t& shape2,
-                      const shape_t& shape3) {
+                      const shape_t& shape2, const shape_t& shape3) {
         std::ostringstream oss;
         oss << "Invalid shapes for operation: " << op << ", ";
         oss << "Shape 1: " << shape1 << ", Shape 2: " << shape2

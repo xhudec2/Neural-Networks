@@ -5,7 +5,8 @@
 #include "../matrix/printer.hpp"
 
 struct Optimizer {
-    virtual void step(Matrix& weights, Matrix& grad, Matrix &momentum, Matrix &rmsprop) = 0;
+    virtual void step(Matrix& weights, Matrix& grad, Matrix& momentum,
+                      Matrix& rmsprop) = 0;
 };
 
 struct Adam : Optimizer {
@@ -18,16 +19,22 @@ struct Adam : Optimizer {
 
     Adam(DT learning_rate) : learning_rate{learning_rate} {};
 
-    void step(Matrix& weights, Matrix& grad, Matrix &momentum, Matrix &rmsprop) override {
+    void step(Matrix& weights, Matrix& grad, Matrix& momentum,
+              Matrix& rmsprop) override {
         DT normalizing_beta1 = 1.0 - powf(beta1, time);
         DT normalizing_beta2 = 1.0 - powf(beta2, time);
         for (size_t i = 0; i < weights.size(); ++i) {
-            momentum.data[i] = beta1 * momentum.data[i] + (1.0 - beta1) * grad.data[i];
-            rmsprop.data[i] = beta2 * rmsprop.data[i] + (1.0 - beta2) * grad.data[i] * grad.data[i];
-            
-            grad.data[i] = -(learning_rate * momentum.data[i] / normalizing_beta1) / (sqrt(rmsprop.data[i] / normalizing_beta2) + delta);
-            
-            weights.data[i] = weights.data[i] - learning_rate * weight_decay * weights.data[i];
+            momentum.data[i] =
+                beta1 * momentum.data[i] + (1.0 - beta1) * grad.data[i];
+            rmsprop.data[i] = beta2 * rmsprop.data[i] +
+                              (1.0 - beta2) * grad.data[i] * grad.data[i];
+
+            grad.data[i] =
+                -(learning_rate * momentum.data[i] / normalizing_beta1) /
+                (sqrt(rmsprop.data[i] / normalizing_beta2) + delta);
+
+            weights.data[i] = weights.data[i] -
+                              learning_rate * weight_decay * weights.data[i];
             weights.data[i] += grad.data[i];
 
             grad.data[i] = 0;
@@ -43,10 +50,13 @@ struct RMSProp : Optimizer {
 
     RMSProp(DT learning_rate) : learning_rate{learning_rate} {};
 
-    void step(Matrix& weights, Matrix& grad, Matrix &momentum, Matrix &rmsprop) override {
+    void step(Matrix& weights, Matrix& grad, Matrix& momentum,
+              Matrix& rmsprop) override {
         for (size_t i = 0; i < weights.size(); ++i) {
-            rmsprop.data[i] = rho * rmsprop.data[i] + (1.0 - rho) * grad.data[i] * grad.data[i];
-            grad.data[i] = (-learning_rate / sqrt(rmsprop.data[i] + delta)) * grad.data[i];
+            rmsprop.data[i] = rho * rmsprop.data[i] +
+                              (1.0 - rho) * grad.data[i] * grad.data[i];
+            grad.data[i] =
+                (-learning_rate / sqrt(rmsprop.data[i] + delta)) * grad.data[i];
             weights.data[i] += grad.data[i];
             grad.data[i] = 0;
         }
@@ -60,7 +70,8 @@ struct SGD : Optimizer {
 
     SGD(DT learning_rate) : learning_rate{learning_rate} {};
 
-    void step(Matrix& weights, Matrix& grad, Matrix &momentum, Matrix &rmsprop) override {
+    void step(Matrix& weights, Matrix& grad, Matrix& momentum,
+              Matrix& rmsprop) override {
         if (use_momentum) {
             momentum *= alpha;
             momentum += grad;

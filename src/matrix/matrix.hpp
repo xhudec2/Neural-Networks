@@ -1,9 +1,9 @@
 #ifndef MATRIX_HPP
 #define MATRIX_HPP
 
+#include <cassert>
 #include <iostream>
 #include <vector>
-#include <cassert>
 
 using DT = float;
 using shape_t = std::vector<size_t>;
@@ -21,8 +21,8 @@ struct Matrix {
     Matrix(shape_t shape, DT val) : shape{shape} {
         data = std::vector<DT>(product(shape), val);
     }
-    Matrix(shape_t shape, std::initializer_list<DT> vals) : shape{shape}, 
-                                                            data{vals} {}
+    Matrix(shape_t shape, std::initializer_list<DT> vals)
+        : shape{shape}, data{vals} {}
 
     Matrix T() {
         assert(shape[0] == 1 or shape[1] == 1);
@@ -53,16 +53,16 @@ struct Matrix {
         return os;
     }
 
-    Matrix &operator=(DT);
-    Matrix &operator+=(DT);
-    Matrix &operator*=(DT);
-    Matrix &operator/=(DT);
-    Matrix &operator+=(const Matrix &);
-    Matrix &operator/(DT);
-    Matrix &operator-(const Matrix &);
-    Matrix &operator*=(const Matrix &);
+    Matrix& operator=(DT);
+    Matrix& operator+=(DT);
+    Matrix& operator*=(DT);
+    Matrix& operator/=(DT);
+    Matrix& operator+=(const Matrix&);
+    Matrix& operator/(DT);
+    Matrix& operator-(const Matrix&);
+    Matrix& operator*=(const Matrix&);
     size_t size() const { return data.size(); }
-    
+
     const DT& at(size_t, size_t) const;
     DT& at(size_t, size_t);
 };

@@ -1,31 +1,32 @@
 #include "matrix.hpp"
 
+#include <cassert>
 #include <cstring>
 #include <random>
-#include <cassert>
 #include <string_view>
 
 #include "../constants.hpp"
 #include "exceptions.hpp"
 
-Matrix &Matrix::operator=(DT c) {
+Matrix& Matrix::operator=(DT c) {
     for (size_t i = 0; i < size(); ++i) {
         data[i] = c;
     }
     return *this;
 }
 
-Matrix &Matrix::operator-(const Matrix &B) {
+Matrix& Matrix::operator-(const Matrix& B) {
     assert(shape == B.shape);
-    for (size_t i = 0;  i < size(); ++i) {
+    for (size_t i = 0; i < size(); ++i) {
         data[i] -= B.data[i];
     }
     return *this;
 }
 
-Matrix &Matrix::operator*=(const Matrix &B) {
+Matrix& Matrix::operator*=(const Matrix& B) {
     // defined only if B is a vector of shape (1, X) or (X, 1)
-    assert((B.shape[0] == 1 && B.shape[1] == shape[1]) || (B.shape[1] == 1 && B.shape[0] == shape[0]));
+    assert((B.shape[0] == 1 && B.shape[1] == shape[1]) ||
+           (B.shape[1] == 1 && B.shape[0] == shape[0]));
 
     for (size_t row = 0; row < shape[0]; row++) {
         for (size_t col = 0; col < shape[1]; col++) {
@@ -36,39 +37,35 @@ Matrix &Matrix::operator*=(const Matrix &B) {
     return *this;
 }
 
-Matrix &Matrix::operator+=(DT c) {
+Matrix& Matrix::operator+=(DT c) {
     for (size_t i = 0; i < size(); ++i) {
         data[i] += c;
     }
     return *this;
 }
 
-Matrix &Matrix::operator*=(DT c) {
+Matrix& Matrix::operator*=(DT c) {
     for (size_t i = 0; i < size(); ++i) {
         data[i] *= c;
     }
     return *this;
 }
 
-Matrix &Matrix::operator/=(DT c) {
-     return (*this) *= (1 / c);   
-}
+Matrix& Matrix::operator/=(DT c) { return (*this) *= (1 / c); }
 
-Matrix &Matrix::operator+=(const Matrix &B) {
+Matrix& Matrix::operator+=(const Matrix& B) {
     if (shape == B.shape) {
         for (size_t i = 0; i < size(); ++i) {
             data[i] += B.data[i];
         }
-    }
-    else if (B.shape[0] == 1 || B.shape[1] == 1) {
+    } else if (B.shape[0] == 1 || B.shape[1] == 1) {
         for (size_t row = 0; row < shape[0]; row++) {
             for (size_t col = 0; col < shape[1]; col++) {
                 size_t idx = (B.shape[0] == 1) ? col : row;
                 data[row * shape[1] + col] += B.data[idx];
             }
         }
-    }
-    else {
+    } else {
         assert(false);
     }
     return *this;
@@ -78,9 +75,7 @@ const DT& Matrix::at(size_t i, size_t j) const {
     return data[i * shape[1] + j];
 }
 
-DT& Matrix::at(size_t i, size_t j) {
-    return data[i * shape[1] + j];
-}
+DT& Matrix::at(size_t i, size_t j) { return data[i * shape[1] + j]; }
 
 size_t product(const shape_t& shape) {
     size_t result = 1;

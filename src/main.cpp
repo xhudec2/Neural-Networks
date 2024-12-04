@@ -83,7 +83,7 @@ int main() {
             ds.get_next_batch(batch * hparams.batch_size, true, Xbatch, ybatch);
             net.forward(Xbatch, outputs, true);
             softmax(outputs, probs);
-            predictions(probs, preds);
+            argmax(probs, preds);
             loss += cross_entropy_from_probs(probs, ybatch);
 
             total_preds += hparams.batch_size;
@@ -126,7 +126,7 @@ int main() {
     Matrix preds({TEST_SIZE, 1});
     net.forward(Xtest, test_out, true);
     softmax(test_out, probs);
-    predictions(probs, preds);
+    argmax(probs, preds);
     loss += cross_entropy_from_probs(probs, ytest);
 
     print("Test loss: ", "");

@@ -33,7 +33,7 @@ void softmax(const Matrix& logits, Matrix& probs) {
 
 // probs - batch_size x fan_out
 // preds - batch_size x 1
-void predictions(const Matrix& probs, Matrix& preds) {
+void argmax(const Matrix& probs, Matrix& preds) {
     for (size_t batch = 0; batch < probs.shape[0]; batch++) {
         size_t highest_j = 0;
         for (size_t j = 0; j < probs.shape[1]; j++) {

@@ -1,7 +1,7 @@
 #!/bin/bash
 ## change this file to your needs
 
-echo "Adding some modules"
+# echo "Adding some modules"
 
 # module add gcc-10.2
 
@@ -24,11 +24,10 @@ echo "#################"
 ## especially if you are using multiple cores
 nice -n 19 ./net
 
-echo "#################"
-echo "   EVALUATING    "
-echo "#################"
-### Evaluate
-echo "Evaluating the whole training dataset including validation data..."
-python3 ./evaluator/evaluate.py ./train_predictions.csv ./data/fashion_mnist_train_labels.csv
-echo "Evaluating test dataset..."
-python3 ./evaluator/evaluate.py ./test_predictions.csv ./data/fashion_mnist_test_labels.csv
+# echo "#################"
+# echo "   EVALUATING    "
+# echo "#################"
+# echo "Evaluating the whole training dataset including validation data..."
+# python3 ./evaluator/evaluate.py ./train_predictions.csv ./data/fashion_mnist_train_labels.csv
+# echo "Evaluating test dataset..."
+# python3 ./evaluator/evaluate.py ./test_predictions.csv ./data/fashion_mnist_test_labels.csv

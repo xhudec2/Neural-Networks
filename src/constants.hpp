@@ -3,7 +3,7 @@
 
 #include <string>
 
-const size_t RAND_SEED = 1;
+const size_t RAND_SEED = 42;
 const std::string DATA_PATH = "./data/";
 const std::string TRAIN_VEC_PATH = DATA_PATH + "fashion_mnist_train_vectors.csv";
 const std::string TRAIN_LABEL_PATH = DATA_PATH + "fashion_mnist_train_labels.csv";

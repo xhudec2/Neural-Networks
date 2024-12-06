@@ -4,7 +4,6 @@
 #include <cassert>
 #include <vector>
 
-#include "../hparams.hpp"
 #include "../matrix/matrix.hpp"
 #include "activation.hpp"
 #include "linear.hpp"
@@ -32,7 +31,6 @@ struct Network {
     void forward(const Matrix& inputs, Matrix& outputs, bool no_grad = false);
     void backward(const Matrix& outputs, const Matrix& targets);
     void update();
-    void train(Hparams);
     void prepare(size_t batch_size);
     DT cross_entropy(const Matrix&, const Matrix&);
 };

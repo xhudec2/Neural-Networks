@@ -1,11 +1,7 @@
 #ifndef EXCEPTION_HPP
 #define EXCEPTION_HPP
 
-#include <exception>
 #include <sstream>
-#include <string_view>
-#include <vector>
-
 #include "printer.hpp"
 
 struct BadShapeException : std::exception {

@@ -3,3 +3,5 @@ data/*
 build/
 net
 .vscode/
+train_predictions.csv
+test_predictions.csv

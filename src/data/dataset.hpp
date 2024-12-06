@@ -2,7 +2,6 @@
 #define DATASET_HPP
 
 #include <string>
-#include <utility>
 
 #include "../matrix/matrix.hpp"
 #include "../parser/csv.hpp"

@@ -24,8 +24,6 @@ struct Linear {
 
     Linear(size_t in_dim, size_t out_dim, bool output, Activation &sigma)
         : shape{{in_dim, out_dim}},
-          weights{
-              random_normal(shape, 0, std::sqrt(2.0 / shape[0]))},  // He init
           grad{shape},
           momentum{shape},
           rmsprop{shape},
@@ -34,7 +32,14 @@ struct Linear {
           bias_momentum{{1, shape[1]}},
           bias_rmsprop{{1, shape[1]}},
           output{output},
-          sigma{sigma} {};
+          sigma{sigma} {
+            if (!output) {
+                weights = random_normal(shape, 0, std::sqrt(2.0 / shape[0]));  // He init
+            } else {
+                weights = random_normal(shape, 0, std::sqrt(2.0 / shape[0]));  // He init
+                // weights = random_normal(shape, 0, std::sqrt(2.0 / (shape[0] + shape[1])));  // Glorot init
+            }
+          };
 
     void prepare(size_t);
     void forward(const Matrix &, Matrix &, bool no_grad = false);

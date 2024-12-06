@@ -1,19 +1,19 @@
-#include <memory>
-
-#include "constants.hpp"
 #include "data/dataset.hpp"
-#include "hparams.hpp"
 #include "matrix/printer.hpp"
 #include "network/helpers.hpp"
 #include "network/network.hpp"
-#include "network/optimizer.hpp"
-#include "parser/csv.hpp"
-#include "tests/tests.hpp"
+
+struct Hparams {
+    shape_t shape;
+    float learning_rate;
+    size_t num_epochs;
+    size_t batch_size;
+};
 
 Hparams hparams = {
     .shape = {IMG_SIZE, 256, 128, 10},
-    .learning_rate = 0.001,
-    .num_epochs = 5,
+    .learning_rate = 0.0011,
+    .num_epochs = 15,
     .batch_size = 100,
 };
 
@@ -64,7 +64,6 @@ int main() {
              ++batch) {
             ds.get_next_batch(batch * hparams.batch_size, false, Xbatch,
                               ybatch);
-
             net.forward(Xbatch, outputs);
             net.backward(outputs, ybatch);
             net.update();
@@ -108,31 +107,48 @@ int main() {
         }
         prev_loss = loss;
     }
+    
+    {
+        net.prepare(DATASET_SIZE);
+        Matrix out({DATASET_SIZE, 10});
+        Matrix probs({DATASET_SIZE, 10});
+        Matrix preds({DATASET_SIZE, 1});
+        net.forward(ds.Xdata, out, true);
+        softmax(out, probs);
+        argmax(probs, preds);
+        DT loss = cross_entropy_from_probs(probs, ds.ydata);
 
-    net.prepare(TEST_SIZE);
-    DT loss = 0;
+        print("Train loss: ", "");
+        print(loss);
 
-    Matrix Xtest({TEST_SIZE, 784});
-    Matrix ytest({TEST_SIZE, 1});
-    CSV::load(Xtest, TEST_VEC_PATH);
-    CSV::load(ytest, TEST_LABEL_PATH);
-    Xtest /= 255.;
-    for (auto &pixel : Xtest.data) {
-        pixel -= mean;
-        pixel /= std;
+        CSV::save(preds, "train_predictions.csv");
     }
-    Matrix test_out({TEST_SIZE, 10});
-    Matrix probs({TEST_SIZE, 10});
-    Matrix preds({TEST_SIZE, 1});
-    net.forward(Xtest, test_out, true);
-    softmax(test_out, probs);
-    argmax(probs, preds);
-    loss += cross_entropy_from_probs(probs, ytest);
 
-    print("Test loss: ", "");
-    print(loss);
+    {
+        net.prepare(TEST_SIZE);
 
-    CSV::save(preds, "test_preds.csv");
+        Matrix Xtest({TEST_SIZE, 784});
+        Matrix ytest({TEST_SIZE, 1});
+        CSV::load(Xtest, TEST_VEC_PATH);
+        CSV::load(ytest, TEST_LABEL_PATH);
+        Xtest /= 255.;
+        for (auto &pixel : Xtest.data) {
+            pixel -= mean;
+            pixel /= std;
+        }
+        Matrix test_out({TEST_SIZE, 10});
+        Matrix probs({TEST_SIZE, 10});
+        Matrix preds({TEST_SIZE, 1});
+        net.forward(Xtest, test_out, true);
+        softmax(test_out, probs);
+        argmax(probs, preds);
+        DT loss = cross_entropy_from_probs(probs, ytest);
+
+        print("Test loss: ", "");
+        print(loss);
+
+        CSV::save(preds, "test_predictions.csv");
+    }
 
     return 0;
 }

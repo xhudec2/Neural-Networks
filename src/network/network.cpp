@@ -3,27 +3,6 @@
 #include "../matrix/printer.hpp"
 #include "helpers.hpp"
 
-auto XOR_dataset() {
-    Matrix inputs({4, 2}, {0, 0, 0, 1, 1, 0, 1, 1});
-    Matrix targets(
-        {4, 1}, {0, 1, 1, 0});  // Each value is the index of the correct class
-
-    return std::pair{inputs, targets};
-}
-
-void Network::train(Hparams hparams) {
-    for (auto &layer : layers) {
-        layer.prepare(hparams.batch_size);
-    }
-    auto [inputs, targets] = XOR_dataset();
-    Matrix outputs{{hparams.batch_size, layers.back().shape[1]}};
-    for (size_t epoch = 0; epoch < hparams.num_epochs; ++epoch) {
-        forward(inputs, outputs);
-        backward(outputs, targets);
-        update();
-    }
-}
-
 void Network::forward(const Matrix &input, Matrix &outputs, bool no_grad) {
     for (size_t i = 0; i < layers.size(); ++i) {
         bool last = i == layers.size() - 1;

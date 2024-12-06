@@ -5,15 +5,15 @@ echo "Adding some modules"
 
 # module add gcc-10.2
 
-
 echo "#################"
 echo "    COMPILING    "
 echo "#################"
 
 ## dont forget to use comiler optimizations (e.g. -O3 or -Ofast)
 # g++ -Wall -std=c++17 -O3 src/main.cpp src/file2.cpp -o network
-make release
+# g++ -std=c++20 -Wall -O3 -flto -funroll-loops -march=native -fno-rtti -ffast-math -fprefetch-loop-arrays src/*.cpp src/matrix/*.cpp src/parser/*.cpp src/data/*.cpp src/tests/*.cpp src/network/*.cpp -o net
 
+make -j 8 release
 
 echo "#################"
 echo "     RUNNING     "
@@ -28,4 +28,7 @@ echo "#################"
 echo "   EVALUATING    "
 echo "#################"
 ### Evaluate
-python3 ./evaluator/evaluate.py ./test_preds.csv ./data/fashion_mnist_test_labels.csv
+echo "Evaluating the whole training dataset including validation data..."
+python3 ./evaluator/evaluate.py ./train_predictions.csv ./data/fashion_mnist_train_labels.csv
+echo "Evaluating test dataset..."
+python3 ./evaluator/evaluate.py ./test_predictions.csv ./data/fashion_mnist_test_labels.csv

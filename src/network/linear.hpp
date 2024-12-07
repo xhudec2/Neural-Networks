@@ -33,12 +33,7 @@ struct Linear {
           bias_rmsprop{{1, shape[1]}},
           output{output},
           sigma{sigma} {
-            if (!output) {
-                weights = random_normal(shape, 0, std::sqrt(2.0 / shape[0]));  // He init
-            } else {
-                weights = random_normal(shape, 0, std::sqrt(2.0 / shape[0]));  // He init
-                // weights = random_normal(shape, 0, std::sqrt(2.0 / (shape[0] + shape[1])));  // Glorot init
-            }
+            weights = random_normal(shape, 0, std::sqrt(2.0 / shape[0]));  // He init
           };
 
     void prepare(size_t);

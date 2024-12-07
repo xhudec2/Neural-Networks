@@ -5,6 +5,7 @@
 
 #include "../matrix/printer.hpp"
 
+
 void Linear::forward(const Matrix &input, Matrix &output, bool no_grad) {
     assert(input.shape[1] == weights.shape[0]);
     assert(weights.shape[1] == output.shape[1] &&

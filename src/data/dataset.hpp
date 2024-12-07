@@ -12,7 +12,6 @@ struct Dataset {
     Matrix ydata;
     size_t batch_size;
     size_t val_start;
-    bool shuffle = false;
 
     Dataset(std::string Xpath, std::string ypath, size_t batch_size, size_t train_size)
         : batch_size{batch_size}, val_start{train_size} {
@@ -24,7 +23,9 @@ struct Dataset {
         CSV::load(ydata, ypath);
     }
 
-    void get_next_batch(size_t from, bool val, Matrix& Xbatch, Matrix& ybatch);
+    void get_next_batch(size_t from, bool validation, Matrix& Xbatch, Matrix& ybatch);
+
+    void shuffle(bool shuffle_all);
 };
 
 #endif

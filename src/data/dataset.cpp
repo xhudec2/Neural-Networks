@@ -28,7 +28,6 @@ void Dataset::shuffle(bool shuffle_all) {
         std::swap_ranges(
             &Xdata.data.data()[i * IMG_SIZE],
             &Xdata.data.data()[(i + 1) * IMG_SIZE],
-            &Xdata.data.data()[indices[i] * IMG_SIZE],
-        );
+            &Xdata.data.data()[indices[i] * IMG_SIZE]);
     }
 }

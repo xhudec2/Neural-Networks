@@ -13,7 +13,7 @@ echo "#################"
 # g++ -Wall -std=c++17 -O3 src/main.cpp src/file2.cpp -o network
 # g++ -std=c++20 -Wall -O3 -flto -funroll-loops -march=native -fno-rtti -ffast-math -fprefetch-loop-arrays src/*.cpp src/matrix/*.cpp src/parser/*.cpp src/data/*.cpp src/tests/*.cpp src/network/*.cpp -o net
 
-make -j 8 release
+make release
 
 echo "#################"
 echo "     RUNNING     "
@@ -27,7 +27,7 @@ nice -n 19 ./net
 # echo "#################"
 # echo "   EVALUATING    "
 # echo "#################"
-# echo "Evaluating the whole training dataset including validation data..."
-# python3 ./evaluator/evaluate.py ./train_predictions.csv ./data/fashion_mnist_train_labels.csv
-# echo "Evaluating test dataset..."
-# python3 ./evaluator/evaluate.py ./test_predictions.csv ./data/fashion_mnist_test_labels.csv
+echo "Evaluating the whole training dataset including validation data..."
+python3 ./evaluator/evaluate.py ./train_predictions.csv ./data/fashion_mnist_train_labels.csv
+echo "Evaluating test dataset..."
+python3 ./evaluator/evaluate.py ./test_predictions.csv ./data/fashion_mnist_test_labels.csv

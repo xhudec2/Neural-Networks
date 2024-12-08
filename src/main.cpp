@@ -2,12 +2,15 @@
 #include "matrix/printer.hpp"
 #include "network/helpers.hpp"
 #include "network/network.hpp"
+#include "tests/tests.hpp"
+
 
 struct Hparams {
     shape_t shape;
     float learning_rate;
     size_t num_epochs;
     size_t batch_size;
+    bool shuffle;
 };
 
 Hparams hparams = {
@@ -15,6 +18,7 @@ Hparams hparams = {
     .learning_rate = 0.0011,
     .num_epochs = 15,
     .batch_size = 100,
+    .shuffle = true,
 };
 
 int main() {
@@ -24,6 +28,10 @@ int main() {
     std::cout << "seed: " << RAND_SEED << "\n";
     Dataset ds(TRAIN_VEC_PATH, TRAIN_LABEL_PATH, hparams.batch_size,
                TRAIN_SIZE);
+
+    if (hparams.shuffle) {
+        ds.shuffle(true);
+    }
 
     ds.Xdata /= 255.;
     double mean = 0.0;
@@ -56,6 +64,9 @@ int main() {
 
     DT prev_loss = 0;
     for (size_t epoch = 1; epoch <= hparams.num_epochs; ++epoch) {
+        if (hparams.shuffle) {
+            ds.shuffle(false);
+        }
         print("--------------------");
         print("Epoch ", "");
         print(epoch);
@@ -110,13 +121,23 @@ int main() {
     
     {
         net.prepare(DATASET_SIZE);
+
+        Matrix Xdata({DATASET_SIZE, IMG_SIZE});
+        Matrix ydata({DATASET_SIZE, 1});
+        CSV::load(Xdata, TRAIN_VEC_PATH);
+        CSV::load(ydata, TRAIN_LABEL_PATH);
+        Xdata /= 255.;
+        for (auto &pixel : Xdata.data) {
+            pixel -= mean;
+            pixel /= std;
+        }
         Matrix out({DATASET_SIZE, 10});
         Matrix probs({DATASET_SIZE, 10});
         Matrix preds({DATASET_SIZE, 1});
-        net.forward(ds.Xdata, out, true);
+        net.forward(Xdata, out, true);
         softmax(out, probs);
         argmax(probs, preds);
-        DT loss = cross_entropy_from_probs(probs, ds.ydata);
+        DT loss = cross_entropy_from_probs(probs, ydata);
 
         print("Train loss: ", "");
         print(loss);
@@ -127,7 +148,7 @@ int main() {
     {
         net.prepare(TEST_SIZE);
 
-        Matrix Xtest({TEST_SIZE, 784});
+        Matrix Xtest({TEST_SIZE, IMG_SIZE});
         Matrix ytest({TEST_SIZE, 1});
         CSV::load(Xtest, TEST_VEC_PATH);
         CSV::load(ytest, TEST_LABEL_PATH);

@@ -7,6 +7,9 @@
 #include "../parser/csv.hpp"
 #include "../constants.hpp"
 
+
+// Stores both train and validation data. Shuffling can be done for the entire dataset or
+// only for the train part. Batching is done for only one portion at a time.
 struct Dataset {
     Matrix Xdata;
     Matrix ydata;

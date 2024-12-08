@@ -4,6 +4,10 @@
 #include "../matrix/matrix.hpp"
 #include "../matrix/printer.hpp"
 
+
+// We implemented several optimizers but in the end Adam was the best, so we kept it.
+
+
 struct Optimizer {
     virtual void step(Matrix& weights, Matrix& grad, Matrix& momentum,
                       Matrix& rmsprop) = 0;

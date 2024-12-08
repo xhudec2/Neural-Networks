@@ -11,8 +11,8 @@ struct Linear {
     Matrix momentum;
     Matrix rmsprop;
 
-    Matrix bias;       //      1 x out_dim
-    Matrix bias_grad;  //      1 x out_dim
+    Matrix bias;       //    1 x out_dim
+    Matrix bias_grad;  //    1 x out_dim
     Matrix bias_momentum;
     Matrix bias_rmsprop;
     bool output;

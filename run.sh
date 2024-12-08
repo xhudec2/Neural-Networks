@@ -1,9 +1,9 @@
 #!/bin/bash
 ## change this file to your needs
 
-# echo "Adding some modules"
+echo "Adding some modules"
 
-# module add gcc-10.2
+module add gcc-10.2
 
 echo "#################"
 echo "    COMPILING    "

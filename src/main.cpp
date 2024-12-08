@@ -22,6 +22,7 @@ Hparams hparams = {
 };
 
 int main() {
+    // Try out these tests :)
     // matrix_tests();
     // csv_tests();
 
@@ -29,10 +30,12 @@ int main() {
     Dataset ds(TRAIN_VEC_PATH, TRAIN_LABEL_PATH, hparams.batch_size,
                TRAIN_SIZE);
 
+    // shuffles the entire dataset, the train and the val part together
     if (hparams.shuffle) {
         ds.shuffle(true);
     }
 
+    // mean and std calculated only on train portion of train dataset, val is left out
     ds.Xdata /= 255.;
     double mean = 0.0;
     for (size_t i = 0; i < TRAIN_SIZE * IMG_SIZE; ++i) {
@@ -65,6 +68,7 @@ int main() {
     DT prev_loss = 0;
     for (size_t epoch = 1; epoch <= hparams.num_epochs; ++epoch) {
         if (hparams.shuffle) {
+            // shuffles only train part of the dataset
             ds.shuffle(false);
         }
         print("--------------------");
@@ -104,12 +108,12 @@ int main() {
             }
         }
 
-        loss /= ((double)VAL_SIZE / hparams.batch_size);
+        loss /= (static_cast<double>(VAL_SIZE) / hparams.batch_size);
 
         print("Val loss: ", "");
         print(loss);
         print("Val acc.: ", "");
-        print((double)correct_preds / total_preds);
+        print(static_cast<double>(correct_preds) / total_preds);
         if (epoch > 1 && prev_loss < loss) {
             optimizer.learning_rate *= 0.5;
             print();

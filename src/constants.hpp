@@ -2,8 +2,14 @@
 #define CONSTANTS_HPP
 
 #include <string>
+#include <ctime>
+#include <random>
 
-const size_t RAND_SEED = 42;
+// const unsigned int RAND_SEED = static_cast<unsigned int>(std::time(nullptr));
+const unsigned int RAND_SEED = 42;
+extern std::random_device rd;
+extern std::mt19937 gen;
+
 const std::string DATA_PATH = "./data/";
 const std::string TRAIN_VEC_PATH = DATA_PATH + "fashion_mnist_train_vectors.csv";
 const std::string TRAIN_LABEL_PATH = DATA_PATH + "fashion_mnist_train_labels.csv";

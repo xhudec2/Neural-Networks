@@ -7,6 +7,11 @@
 #include "exceptions.hpp"
 
 
+// Some of these operators and functions are not used in the final implementation.
+// Exceptions were added just to help with debugging and the development process.
+// We left them here because "if it ain't broke don't fix it".
+
+
 Matrix& Matrix::operator=(DT c) {
     for (size_t i = 0; i < size(); ++i) {
         data[i] = c;
@@ -237,6 +242,7 @@ Matrix random_normal(const shape_t& shape, DT mean, DT std) {
 
     std::normal_distribution<DT> d{mean, std};
 
+    // generator is defined in constants.cpp
     for (size_t i = 0; i < result.size(); i++) {
         result.data[i] = d(gen);
     }

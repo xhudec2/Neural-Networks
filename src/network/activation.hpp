@@ -23,6 +23,7 @@ struct ReLU : Activation {
     }
 };
 
+// Used for Binary classification for XOR, not used in the MNIST implementation
 struct Sigmoid : Activation {
     virtual void apply(Matrix &output) override {
         assert(output.size() == 1);

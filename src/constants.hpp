@@ -5,8 +5,13 @@
 #include <ctime>
 #include <random>
 
+// Seed can be random, it should not degrade performance.
 // const unsigned int RAND_SEED = static_cast<unsigned int>(std::time(nullptr));
+
 const unsigned int RAND_SEED = 42;
+// Needs to be extern because if it is here it gets duplicated and does not compile.
+// Used in src/data/dataset.cpp Dataset::shuffle and in random matrix inititialization
+// in src/matrix/matrix.cpp random_normal
 extern std::random_device rd;
 extern std::mt19937 gen;
 

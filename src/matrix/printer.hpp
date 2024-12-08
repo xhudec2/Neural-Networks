@@ -1,6 +1,8 @@
 #ifndef PRINTER_HPP
 #define PRINTER_HPP
 
+// Only for debugging
+
 #include <iostream>
 #include <vector>
 

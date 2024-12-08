@@ -49,7 +49,7 @@ DT cross_entropy_from_probs(const Matrix& probs, const Matrix& targets) {
     DT loss = 0;
     for (size_t batch = 0; batch < targets.shape[0]; batch++) {
         size_t correct_i = targets.at(batch, 0);  // Implicit conversion
-        loss += -logf(probs.at(batch, correct_i));
+        loss += -logf(probs.at(batch, correct_i) + 0.000001);
     }
     loss /= targets.shape[0];  // We want mean NLL
 

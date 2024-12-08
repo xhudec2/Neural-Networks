@@ -6,6 +6,7 @@
 #include "../constants.hpp"
 #include "exceptions.hpp"
 
+
 Matrix& Matrix::operator=(DT c) {
     for (size_t i = 0; i < size(); ++i) {
         data[i] = c;
@@ -230,9 +231,6 @@ Matrix iota(const shape_t& shape) {
 
     return result;
 }
-
-std::random_device rd{};
-std::mt19937 gen{RAND_SEED};
 
 Matrix random_normal(const shape_t& shape, DT mean, DT std) {
     Matrix result(shape);

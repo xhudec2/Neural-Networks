@@ -1,6 +1,5 @@
 ### TASK
-  - Implement a neural network in a low-level programming language
-    C++ without the use of advanced libraries or frameworks.
+  - Implement a neural network in C++ without the use of advanced libraries or frameworks.
   - Train it on the supplied Fashion-MNIST dataset using a backpropagation
     algorithm.
 
